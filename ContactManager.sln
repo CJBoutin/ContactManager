@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactManagerServiceLayer", "ContactManagerServiceLayer\ContactManagerServiceLayer.csproj", "{03C90A7F-C913-4B0F-9F62-09E62FD3179D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebuggingConsole", "DebuggingConsole\DebuggingConsole.csproj", "{BDF246C8-EFD8-4C2D-8BD3-15059005BF7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{03C90A7F-C913-4B0F-9F62-09E62FD3179D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03C90A7F-C913-4B0F-9F62-09E62FD3179D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03C90A7F-C913-4B0F-9F62-09E62FD3179D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF246C8-EFD8-4C2D-8BD3-15059005BF7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF246C8-EFD8-4C2D-8BD3-15059005BF7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF246C8-EFD8-4C2D-8BD3-15059005BF7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF246C8-EFD8-4C2D-8BD3-15059005BF7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
