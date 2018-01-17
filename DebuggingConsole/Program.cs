@@ -19,7 +19,7 @@ namespace DebuggingConsole
             dict.Add("FirstName", "Connor");
             dict.Add("LastName", "Boutin");
             string json = JsonConvert.SerializeObject(dict);
-            var success = request.PostContent(json).Result;
+            var response = request.PostContent(json).Result;
         }
 
     }

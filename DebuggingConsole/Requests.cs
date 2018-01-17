@@ -11,7 +11,7 @@ namespace DebuggingConsole
 {
     class Requests
     {
-        public async Task<int> PostContent(string data)
+        public async Task<string> PostContent(string data)
         {
             string jsonResponse = "";
             using (var httpClient = new HttpClient())
@@ -39,11 +39,11 @@ namespace DebuggingConsole
                 }
                 catch
                 {
-
+                    jsonResponse = "Error";
                 }
             }
 
-            return 1;
+            return jsonResponse;
         }
 
     }

@@ -19,7 +19,7 @@ namespace ContactManagerServiceLayer
 
         public string NewContact(ContactData cData)
         {
-            var s = string.Format("Contact received" + cData.FirstName, cData.LastName);
+            var s = string.Format("Contact received " + cData.FirstName + cData.LastName);
             return s;
         }
 
