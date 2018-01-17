@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -12,7 +14,13 @@ namespace DebuggingConsole
     {
         static void Main(string[] args)
         {
-            string connectionString = "localhost:59056/";
+            Requests request = new Requests();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add("FirstName", "Connor");
+            dict.Add("LastName", "Boutin");
+            string json = JsonConvert.SerializeObject(dict);
+            var success = request.PostContent(json).Result;
         }
+
     }
 }
