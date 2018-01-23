@@ -1,0 +1,9 @@
+#Required SQL Stored Procedures
+
+// This StoredProc is used to add the full data of a contact. If any of the fields are not provided, they will go into this null.
+// The procedure should perform an INSERT on the relevant tables to insert this information.
+// **Be sure that you preserve the foreign key structure of the database ** Please feel free to contact Connor Boutin with any questions.
+InsertNewContact(userName VARCHAR(16), conFirstName VARCHAR(32), conLastName VARCHAR(32), numberType VARCHAR(10), areaCode INT, sigNumber INT, extension INT, emailType VARCHAR(10), emailAddress VARCHAR(30), addressType VARCHAR(10), streetNo INT, streetName VARCHAR(30), city VARCHAR(16), country VARCHAR(32), province VARCHAR(15)
+BEGIN
+
+END;
