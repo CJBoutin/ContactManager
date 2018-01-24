@@ -1,0 +1,101 @@
+<html>
+<head>
+  <title> Group 20 Small Project</title>
+  <link href="css/smallProjectStyle.css" rel="stylesheet">
+
+</head>
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+</style>
+
+<body>
+  <h1> COP 4331 Group 20 Contact Manager </h1>
+  <div id="loggedInDiv">
+    <!--style="display:none; visibility:hidden;"-->
+  	<span id="userName"></span><br />
+  	<button type="button" id="logoutButton" class="buttons" onclick="return logout();"> Log Out </button>
+  </div>
+
+  <div  id ="loginDiv" style="text-align:center">
+    Please login<br />
+    <form id="loginForm" action="">
+    Login:
+    <input type="text" id="loginName"><br />
+    Password:
+    <input type="password" id="loginPassword"<br />
+    <br />
+    </form>
+    <span id="loginResult"></span>
+    <button onClick="return login();"class="buttons"> Login </button>
+    <button onClick="return onCreateAccountTabClicked();"class="buttons"> Create Account </button>
+  </div>
+
+  <div id="createAccDiv" >
+    <form action="">
+      Desired Username: <input type="text" name="cUserName" class="textBox"><br />
+      New Password: <input type="password" name="cPassword" class="textBox"><br />
+      Confirm Password: <input type="password" name="checkCPassword"class="textBox"><br />
+    </form>
+    <span id="cAccResponse"></span>
+    <button onClick="return createAccount();" class="buttons">Create Account </button>
+  </div>
+
+  <div id="delete" class="divRight">
+    <h2> Delete Contact </h2>
+    <p>
+      Search Contact to Delete: <input type="text" id="deleteContact"class="textBox">
+      <button type="button" class="buttons" onclick="return delete();"> Delete </button><br />
+      <span id="deleteResult"></span>
+    </p>
+  </div>
+
+  <div id="addDiv" class="add">
+    <h2> Add Contact </h2>
+    <form action="">
+      First Name: <input type="text" name="firstName" class="textBox"><br />
+      Last Name: <input type="text" name="lastName"class="textBox"><br />
+      Address(es): <br />
+      Home: <input type="text" name="homeAddress"class="textBox"><br />
+      Work: <input type="text" name="workAddress"class="textBox"><br />
+      Other: <input type="text" name="otherAddress"class="textBox"><br />
+      Email: <br />
+      Personal: <input type="text" name="personalEmail" class="textBox"><br />
+      Work: <input type="text" name="workEmail" class="textBox"><br />
+      Other: <input type="text" name="otherEmail" class="textBox"><br />
+      Phone: <br />
+      Home: <input type="text" name="homePhone"class="textBox"><br />
+      Work: <input type="text" name="workPhone"class="textBox"><br />
+      Mobile: <input type="text" name="mobilePhone"class="textBox"><br />
+      Other: <input type="text" name="otherPhone"class="textBox"><br />
+
+  <button onclick="return addContact();" class="buttons"> Add Contact </button>
+  <br />
+  </form>
+  <span id="addContactResult"></span>
+  </div>
+
+
+  <div id="searchDiv" style="width:100%" class="divLeft">
+    <h2> Search for Contact Info </h2>
+    <form action="">
+      Search Name: <input type="text" name="searchName"class="textBox">
+      Search Number: <input type="text" id="searchNumber"class="textBox"><br />
+    </form>
+    <button onClick="return searchContacts();"> Search </button>
+    <span id="searchContactsResult"></span>
+
+        <table id="contactTable" style="width: 1500px";"align: center" >
+          <!--insert table code here-->
+  </div>
+
+
+
+  </body>
+  </html>
