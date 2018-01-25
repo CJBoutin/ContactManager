@@ -2,20 +2,42 @@
 Please note that the Keys must match exactly when communicating with the API (hence 'contract' ;) )
 
 The Data does not necessarily have to be in this order, or even contain all of the data requested here.
+The most important thing to note here is that each entry for AddressInfo, EmailInfo, and PhoneInfo simply contains a list of the relevant data.
+
+BusinessInfo simply contains 
+- UserId
+- FirstName (new contact)
+- LastName (new Contact)
+
+AddressInfo contains
+- AddressType
+- StreetNumber
+- StreetName
+- City
+- Country
+- Province
+
+EmailInfo contains
+- EmailType
+- Email Address
+
+PhoneInfo contains
+- PhoneType
+- PhoneNumber
 
 {
-"UserId":"1",
-"UserName":"ConnorBoutin",
-"FirstName":"Connor",
-"LastName":"Boutin",
-"PhoneType":"Cell",
-"PhoneNumber":"9542782404",
-"EmailType":"Personal",
-"EmailAddress":"cjboutin@bellsouth.net",
-"AddressType":"School",
-"StreetNumber":"4000",
-"StreetName":"Central Florida",
-"City":"Orlando",
-"Country":"USA",
-"Province":"Florida"
+"BusinessInfo":
+  ["1","Connor","Boutin"],
+"AddressInfo":
+  [
+    ["School","4000","Central Florida","Orlando","USA","Florida"]
+  ],
+"EmailInfo":
+  [
+    ["Personal","cjboutin@bellsouth.net"]
+  ],
+"PhoneInfo":
+  [
+    ["Cell","9542782404"]
+  ]
 }
