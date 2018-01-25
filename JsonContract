@@ -30,7 +30,8 @@ PhoneInfo contains
   ["1","Connor","Boutin"],
 "AddressInfo":
   [
-    ["School","4000","Central Florida","Orlando","USA","Florida"]
+    ["School","4000","Central Florida","Orlando","USA","Florida"],
+    ["Home Address","630","Main Street","Orlando","USA","Florida"]
   ],
 "EmailInfo":
   [
