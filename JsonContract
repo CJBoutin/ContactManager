@@ -1,0 +1,21 @@
+# This is the Json contract required for the API. It includes dummy data,
+Please note that the Keys must match exactly when communicating with the API (hence 'contract' ;) )
+
+The Data does not necessarily have to be in this order, or even contain all of the data requested here.
+
+{
+"UserId":"1",
+"UserName":"ConnorBoutin",
+"FirstName":"Connor",
+"LastName":"Boutin",
+"PhoneType":"Cell",
+"PhoneNumber":"9542782404",
+"EmailType":"Personal",
+"EmailAddress":"cjboutin@bellsouth.net",
+"AddressType":"School",
+"StreetNumber":"4000",
+"StreetName":"Central Florida",
+"City":"Orlando",
+"Country":"USA",
+"Province":"Florida"
+}
