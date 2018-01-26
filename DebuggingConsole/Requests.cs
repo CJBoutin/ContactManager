@@ -11,8 +11,9 @@ namespace DebuggingConsole
 {
     class Requests
     {
-        public async Task<string> PostContent(string data)
+        public async Task<string> PostContent(string data, string endpt)
         {
+            
             string jsonResponse = "";
             using (var httpClient = new HttpClient())
             {
@@ -24,7 +25,7 @@ namespace DebuggingConsole
                 httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("utf-8"));
 
 
-                string endpoint = @"/ContactManagerService.svc/NewContact";
+                string endpoint = @"/ContactManagerService.svc/" + endpt;
 
                 try
                 {
@@ -35,6 +36,10 @@ namespace DebuggingConsole
                     {
                         jsonResponse = await response.Content.ReadAsStringAsync();
                         //do something with json response here
+                    }
+                    else
+                    {
+                        return await response.Content.ReadAsStringAsync();
                     }
                 }
                 catch
