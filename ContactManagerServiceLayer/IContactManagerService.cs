@@ -10,53 +10,6 @@ namespace ContactManagerServiceLayer
 {
 
     [DataContract]
-    /*public class ContactData
-    {
-        [DataMember]
-        public string UserId { get; set; }
-
-        [DataMember]
-        public string FirstName { get; set; }
-
-        [DataMember]
-        public string LastName { get; set; }
-
-        [DataMember]
-        public string PhoneNumber { get; set; }
-
-        [DataMember]
-        public string PhoneType { get; set; }
-
-        [DataMember]
-        public string EmailType { get; set; }
-
-        [DataMember]
-        public string EmailAddress { get; set; }
-
-        [DataMember]
-        public string AddressType { get; set; }
-
-        [DataMember]
-        public string StreetNo { get; set; }
-
-        [DataMember]
-        public string StreetName { get; set; }
-
-        [DataMember]
-        public string City { get; set; }
-
-        [DataMember]
-        public string Country { get; set; }
-
-        [DataMember]
-        public string Province { get; set; }
-
-        [DataMember]
-        public string UserName { get; set; }
-
-    }
-    */
-
     public class ContactData
     {
         [DataMember]

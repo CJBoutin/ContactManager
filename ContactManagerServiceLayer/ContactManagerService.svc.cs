@@ -38,16 +38,18 @@ namespace ContactManagerServiceLayer
             // Contact will be guaranteed a first name. Other data must be set to 'null' if null.
             // PARAMATERS:
             string fullQuery = "";
-            string insertContact = string.Format("CALL InsertContact({0}, {1}, {2});",
+            string insertContact = string.Format("CALL InsertContact({0}, {1}, {2}); SELECT DISTINCT LAST_INSERT_ID();",
                 DataManipulation.FormatForSql(businessInfo[0]),
                 DataManipulation.FormatForSql(businessInfo[1]),
                 DataManipulation.FormatForSql(businessInfo[2]));
-            fullQuery += insertContact;
+
+            MySqlCommand newContact = new MySqlCommand(insertContact, connection);
+            int contactId = Convert.ToInt32(newContact.ExecuteScalar());
 
             foreach(var item in addressInfo)
             {
                 string insertAddress = string.Format("CALL InsertAddress({0}, {1}, {2}, {3}, {4}, {5}, {6});",
-                DataManipulation.FormatForSql(businessInfo[3]),
+                DataManipulation.FormatForSql(contactId.ToString()),
                 DataManipulation.FormatForSql(item[0]),
                 DataManipulation.FormatForSql(item[1]),
                 DataManipulation.FormatForSql(item[2]),
@@ -60,7 +62,7 @@ namespace ContactManagerServiceLayer
             foreach(var item in emailInfo)
             {
                 string insertEmail = string.Format("CALL InsertEmail({0}, {1}, {2});",
-                    DataManipulation.FormatForSql(businessInfo[3]),
+                    DataManipulation.FormatForSql(contactId.ToString()),
                     DataManipulation.FormatForSql(item[0]),
                     DataManipulation.FormatForSql(item[1]));
 
@@ -73,7 +75,7 @@ namespace ContactManagerServiceLayer
                 string extension = item[1].Substring(10, item[1].Length - 10);
 
                 string insertPhoneNumber = string.Format("CALL InsertPhoneNumber({0}, {1}, {2}, {3}, {4});",
-                    DataManipulation.FormatForSql(businessInfo[3]),
+                    DataManipulation.FormatForSql(contactId.ToString()),
                     DataManipulation.FormatForSql(item[0]),
                     DataManipulation.FormatForSql(ACode),
                     DataManipulation.FormatForSql(sigNumber),
