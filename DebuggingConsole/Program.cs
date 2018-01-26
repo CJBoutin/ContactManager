@@ -24,7 +24,7 @@ namespace DebuggingConsole
             dict.Add("1");
             dict.Add("NewFirst");
             dict.Add("NewLast");
-            dict.Add("3");
+            dict.Add("4");
 
             List<List<string>> pList = new List<List<string>>();
             List<string> phoneData = new List<string>();
@@ -65,7 +65,7 @@ namespace DebuggingConsole
             jsonInfo.Add("PhoneInfo", pList);
             
             string json = JsonConvert.SerializeObject(jsonInfo);
-            var response = request.PostContent(json, "NewContact").Result;
+            var response = request.PostContent(json, "UpdateContact").Result;
             
 
             /*

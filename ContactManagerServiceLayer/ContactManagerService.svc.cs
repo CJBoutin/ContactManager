@@ -124,46 +124,67 @@ namespace ContactManagerServiceLayer
 
         public string UpdateContact(ContactData cData)
         {
-            string s = "";
-
-            var addressInfo = cData.AddressInfo[0];
-            var emailInfo = cData.EmailInfo[0];
+            var addressInfo = cData.AddressInfo;
+            var emailInfo = cData.EmailInfo;
             var businessInfo = cData.BusinessInfo;
-            var phoneInfo = cData.PhoneInfo[0];
+            var phoneInfo = cData.PhoneInfo;
 
             // Insert the new contact into the SQL Database
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
-            // Insert the new contact data
-            // Contact will be guaranteed a first name. Other data must be set to 'null' if null.
-            // PARAMATERS:
-            string ACode = phoneInfo[1].Substring(0, 3);
-            string sigNumber = phoneInfo[1].Substring(3, 7);
-            string extension = phoneInfo[1].Substring(10, phoneInfo[1].Length - 10);
-            string command = string.Format("CALL UpdateContact({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15});",
-                DataManipulation.FormatForSql(businessInfo[0]),
-                DataManipulation.FormatForSql(businessInfo[3]),
-                DataManipulation.FormatForSql(businessInfo[1]),
-                DataManipulation.FormatForSql(businessInfo[2]),
-                DataManipulation.FormatForSql(phoneInfo[0]),
-                DataManipulation.FormatForSql(ACode),
-                DataManipulation.FormatForSql(sigNumber),
-                DataManipulation.FormatForSql(extension),
-                DataManipulation.FormatForSql(emailInfo[0]),
-                DataManipulation.FormatForSql(emailInfo[1]),
-                DataManipulation.FormatForSql(addressInfo[0]),
-                DataManipulation.FormatForSql(addressInfo[1]),
-                DataManipulation.FormatForSql(addressInfo[2]),
-                DataManipulation.FormatForSql(addressInfo[3]),
-                DataManipulation.FormatForSql(addressInfo[4]),
-                DataManipulation.FormatForSql(addressInfo[5]));
-            MySqlCommand cmd = new MySqlCommand(command, connection);
             connection.Open();
 
+            string fullQuery = "";
+            int contactId = Convert.ToInt32(businessInfo[3]);
+
+            // must drop all data for this contact on update.
+            // Then we must re-add the new data
+            string deleteCmd = string.Format("CALL DeleteAddress({0}); CALL DeletePhoneNumber({1}); CALL DeleteEmail({2});", contactId, contactId, contactId);
+            MySqlCommand deleteCommand = new MySqlCommand(deleteCmd, connection);
+            deleteCommand.ExecuteNonQuery();
+
+            foreach (var item in addressInfo)
+            {
+                string insertAddress = string.Format("CALL InsertAddress({0}, {1}, {2}, {3}, {4}, {5}, {6});",
+                DataManipulation.FormatForSql(contactId.ToString()),
+                DataManipulation.FormatForSql(item[0]),
+                DataManipulation.FormatForSql(item[1]),
+                DataManipulation.FormatForSql(item[2]),
+                DataManipulation.FormatForSql(item[3]),
+                DataManipulation.FormatForSql(item[4]),
+                DataManipulation.FormatForSql(item[5]));
+
+                fullQuery += insertAddress;
+            }
+            foreach (var item in emailInfo)
+            {
+                string insertEmail = string.Format("CALL InsertEmail({0}, {1}, {2});",
+                    DataManipulation.FormatForSql(contactId.ToString()),
+                    DataManipulation.FormatForSql(item[0]),
+                    DataManipulation.FormatForSql(item[1]));
+
+                fullQuery += insertEmail;
+            }
+            foreach (var item in phoneInfo)
+            {
+                string ACode = item[1].Substring(0, 3);
+                string sigNumber = item[1].Substring(3, 7);
+                string extension = item[1].Substring(10, item[1].Length - 10);
+
+                string insertPhoneNumber = string.Format("CALL InsertPhoneNumber({0}, {1}, {2}, {3}, {4});",
+                    DataManipulation.FormatForSql(contactId.ToString()),
+                    DataManipulation.FormatForSql(item[0]),
+                    DataManipulation.FormatForSql(ACode),
+                    DataManipulation.FormatForSql(sigNumber),
+                    DataManipulation.FormatForSql(extension));
+
+                fullQuery += insertPhoneNumber;
+            }
+            MySqlCommand cmd = new MySqlCommand(fullQuery, connection);
             cmd.ExecuteNonQuery();
-            s = "Success";
+            
             connection.Close();
 
-            return s;
+            return "Success";
 
         }
 
