@@ -1,0 +1,16 @@
+# URIs for the API 
+
+Gets all contacts for a supplies User Id
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetAllContacts?uId={userId}
+
+Checks if API is Alive
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/IsAlive
+
+Adds a contact. Body should be in format outlines in the JSON Contract file
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/NewContact
+
+Updates a contact. use the same body JSON format as adding a contact.
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/UpdateContact
+
+Deletes a contact based on the contact Id
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteContact?cId={conId}

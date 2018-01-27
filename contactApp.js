@@ -165,6 +165,8 @@ function createAccount(){
 
 function addContact(){
     
+    var addAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/NewContact"
+    
     var firstName = document.getElementById("firstName").value;
     var lastName = document.getElementById("lastName").value;
     var homePhone = document.getElementById("homePhone").value;
@@ -182,20 +184,32 @@ function addContact(){
     
     //populate with contact info
     
-    var jsonSendData = {"UserId": userID, "FirstName": firstName, "LastName": lastName, "homePhone": homePhone, "workPhone": workPhone,  "otherPhone": otherPhone, "homeEmail": homeEmail};
+    //var jsonSendData = {"UserId": userID, "FirstName": firstName, "LastName": lastName, "homePhone": homePhone, "workPhone": workPhone,  "otherPhone": otherPhone, "homeEmail": homeEmail};
+    
+    
+     var jsonSendData = {"BusinessInfo": [firstName,lastName], "PhoneInfo": [["work",workPhone],["home",homePhone],["mobile",mobilePhone],["other",otherPhone]], "AddressInfo": [["home", homeAddress], ["work", workAddress], ["other",otherAddress]], "EmailInfo": [["personal", homeEmail], ["work", workEmail], ["other", otherEmail]]};
+    
+    //or restructure formatting again to be JSON within arrays within JSON:
+    
+    /*
+     
+     = {...,"PhoneInfo": [{"Type": "work","PhoneNumber": workPhone},...], ...}
+     
+     */
+     
     //wait until i know right order
     jsonSendData = JSON.stringify(jsonSendData);
     
     //xml request
     var addRequest = new XMLHttpRequest();
-    addRequest.open("POST", /*???*/, true);
+    addRequest.open("POST", addAPI, true);
     addRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         addRequest.onreadystatechange = function(){
             if (this.readyState == 4 && this.status == 200){
                 //read back some JSON data and tell the user if the thing was input correctly?
                 
-                document.getElementById("addResult").innerHTML = firstName + " " + lastName + " added successfully.";
+                document.getElementById("addContactResult").innerHTML = firstName + " " + lastName + " added successfully.";
             }
         }
         addRequest.send(jsonSendData);
@@ -238,6 +252,8 @@ function displayContacts(){
 
 function searchContacts(){
     
+    var srchAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetAllContacts?uId=" + userID;
+    
     var srchElement = document.getElementById("searchElement").value;
     
     contactTable = document.getElementById("contactTable");
@@ -247,7 +263,7 @@ function searchContacts(){
     
     //xml request
     var searchRequest = new XMLHttpRequest();
-    searchRequest.open("POST", /*???*/, true);
+    searchRequest.open("POST", srchAPI, true);
     searchRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         searchRequest.onreadystatechange = function(){
@@ -256,7 +272,8 @@ function searchContacts(){
                 var jsonObject = JSON.parse(searchRequest.responseText);
                 
                 
-                var tabl = document.createElement("table");
+                var tabl = document.getElementById("ContactTable");
+                tabl.innerHTML = "";
                 var tablbdy = document.createElement("tbody");
                 
                 //create table from JSON response
@@ -271,29 +288,48 @@ function searchContacts(){
                 //im using jquery for the next project
                 for(var i = 0; i < jsonObject.length;i++){
                     var row = document.createElement("tr");
-                    var keys = Object.keys(jsonObject[i]);
+                    
+                    //var keys = Object.keys(jsonObject[i]);
                     console.log(keys);
-                    for(var j = 0; j < keys.length;j++){
+                    for(var j = 0; j < jsonObject[i].BusinessInfo.length;j++){
                         var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject[i].keys[j]);
-                        console.log(jsonObject[i].keys[j]);
+                        var cellData = document.createTextNode(jsonObject[i].BusinessInfo[j]);
+                        console.log(jsonObject[i].BusinessInfo[j]);
+                        cell.appendChild(cellData);
+                        row.appendChild(cell);
+                    }
+                    for(var j = 0; j < jsonObject[i].PhoneInfo.length;j++){
+                        var cell = document.createElement("td");
+                        var cellData = document.createTextNode(jsonObject[i].PhoneInfo[j]);
+                        console.log(jsonObject[i].PhoneInfo[j]);
+                        cell.appendChild(cellData);
+                        row.appendChild(cell);
+                    }
+                    for(var j = 0; j < jsonObject[i].EmailInfo.length;j++){
+                        var cell = document.createElement("td");
+                        var cellData = document.createTextNode(jsonObject[i].EmailInfo[j]);
+                        console.log(jsonObject[i].EmailInfo[j]);
                         cell.appendChild(cellData);
                         row.appendChild(cell);
                     }
                     var cell = document.createElement("td");
                     var delButton = createElement("button");
-                    delButton.innerHTML = X;
+                    /*delButton.innerHTML = X;
                     delButton.setAttribute("data-contactmanager-contactid", jsonObject[i].ContactId);
                     delButton.onClick = deleteContact(delButton.getAttribute("data-contactmanager-contactid"));
+                     */
                     //or
-                    /
+                    
                     cell.innerHTML = "<button onClick = \"deleteContact(" + jsonObject[i].ContactId + ")\" data-contactmanager-contactid = \"" + jsonObject[i].ContactId + "\">X</button>";
                     
-                    */
+                    var rowID = "row" + jsonObject[i].ContactId;
+                    
+                    row.setAttribute("id", rowID);
+                    
                     tablbdy.appendChild(row);
                 }
                 tabl.appendChild(tablbdy);
-                document.getElementById("tableSpan").appendChild(tabl);
+                //document.getElementById("tableSpan").appendChild(tabl);
             }
             
         }
@@ -312,15 +348,39 @@ function deleteContact(contactID){
     //figure out the correct order for JSON
     var jsonSendData = {"contactID": contactID, "userID", userID};
     
+    var delAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteContact?cId=" + contactID;
+    
     console.log(this.getAttribute("data-contactmanager-contactid"));
     console.log(contactID);
     console.log(this.getAttribute("data-contactmanager-contactid") == contactID);
     
     //xml request
     var delRequest = new XMLHttpRequest();
-    delRequest.open("POST", /*???*/, true);
+    delRequest.open("POST", delAPI, true);
     delRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
+        delRequest.onreadystatechange = function(){
+            
+            var response = JSON.parse(delRequest.responseText);
+            
+            if(response < 1){
+                //error deleting
+                console.log("Could not delete contact");
+            }
+            console.log("contact deleted successfully");
+            //update the displayed table, but how?
+            // search for children and remove from parent? (imma need to set some ID's?)
+            var rowID = "row" + contactID;
+            row = document.getElementById(rowID);
+            
+            //row.innerHTML = "";
+            for(var i = 0; i < row.childNodes.length; i = 0){
+                row.removeChild(row.childNodes[i]);
+            }
+            document.getElementById("ContactTable").firstChild.removeChild(row);
+            
+        }
+        
         delRequest.send(jsonSendData); //cases for errors?
         
         var jsonObject = JSON.parse(delRequest.responseText);
@@ -346,3 +406,7 @@ function hideOrShow(elementID, newState){
     document.getElementById( elementId ).style.visibility = visibility;
     document.getElementById( elementId ).style.display = display;
 }
+
+
+//// add an update function if there is time
+// updateAPI  : "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/UpdateContact"
