@@ -137,10 +137,11 @@ namespace ContactManagerServiceLayer
             var emailInfo = cData.EmailInfo;
             var businessInfo = cData.BusinessInfo;
             var phoneInfo = cData.PhoneInfo;
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+
             try
             {
                 // Insert the new contact into the SQL Database
-                MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
                 connection.Open();
 
                 string fullQuery = "";
@@ -198,6 +199,10 @@ namespace ContactManagerServiceLayer
             {
                 return e.Message;
             }
+            finally
+            {
+                connection.Close();
+            }
             return "Success";
 
         }
@@ -212,12 +217,15 @@ namespace ContactManagerServiceLayer
             {
                 connection.Open();
                 a = command.ExecuteNonQuery();
-                connection.Close();
             }
             catch(Exception e)
             {
                 return e.Message;
             }
+            finally
+            {
+                connection.Close();
+                    }
             if(a > 0)
             {
                 return "Success";
@@ -231,22 +239,36 @@ namespace ContactManagerServiceLayer
         public string AddUser(UserData uData)
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
-
+            connection.Open();
             string cmd = string.Format("INSERT INTO users(UserName, PasswordHash, DateCreated, DateModified) VALUES({0}, {1}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()); SELECT LAST_INSERT_ID();", DataManipulation.FormatForSql(uData.UserName), DataManipulation.FormatForSql(uData.PasswordHash));
             MySqlCommand command = new MySqlCommand(cmd, connection);
             int curUserId = Convert.ToInt32(command.ExecuteScalar());
             Dictionary<string, string> resp = new Dictionary<string, string>();
             resp.Add("UserId", curUserId.ToString());
+            connection.Close();
             return JsonConvert.SerializeObject(resp);
         }
 
         public string DeleteUser(string userId)
         {
+            
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+            try
+            {
+                connection.Open();
+                MySqlCommand deleteUser = new MySqlCommand(string.Format("DELETE FROM users WHERE Id={0}", userId), connection);
 
-            MySqlCommand deleteUser = new MySqlCommand(string.Format("DELETE FROM users WHERE Id={0}", userId), connection);
+                deleteUser.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+            finally
+            {
+                connection.Close();
 
-            deleteUser.ExecuteNonQuery();
+            }
             return "Success";
         }
          public async Task<string> GetContactInfo(string conId)
@@ -255,11 +277,11 @@ namespace ContactManagerServiceLayer
             Dictionary<string, string> response = new Dictionary<string, string>();
             AdvancedContact contact = new AdvancedContact();
             List<dynamic> contactItem = new List<dynamic>();
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
 
 
             try
             {
-                MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
                 connection.Open();
                 string addressCmd = string.Format(@"SELECT * FROM addresses WHERE ContactInfoId={0};", conId);
                 string phoneCmd = string.Format(@"SELECT * FROM phonenumbers WHERE ContactInfoId={0};", conId);
@@ -319,6 +341,10 @@ namespace ContactManagerServiceLayer
             catch(Exception e)
             {
                 return e.Message;
+            }
+            finally
+            {
+                connection.Close();
             }
             string jsonObj = JsonConvert.SerializeObject(contactItem);
             return jsonObj;

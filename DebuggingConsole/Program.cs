@@ -16,8 +16,9 @@ namespace DebuggingConsole
     {
         static void Main(string[] args)
         {
-            /*
+            
             Requests request = new Requests();
+            /*
             Dictionary<string, dynamic> jsonInfo = new Dictionary<string, dynamic>();
             List<string> dict = new List<string>();
             
@@ -63,13 +64,19 @@ namespace DebuggingConsole
             jsonInfo.Add("AddressInfo", aList);
             jsonInfo.Add("EmailInfo", eList);
             jsonInfo.Add("PhoneInfo", pList);
-            
-            string json = JsonConvert.SerializeObject(jsonInfo);
-            var response = request.PostContent(json, "UpdateContact").Result;
             */
+             Dictionary<string, string> req = new Dictionary<string, string>();
+            req.Add("UserName", "NewUser");
+            req.Add("PasswordHash", "PHash");
 
+            string json = JsonConvert.SerializeObject(req);
+            var response = request.PostContent(json, "AddUser").Result;
+            
+            /*
             string api = ConfigurationManager.AppSettings["apiConnection"].ToString();
-            string endpoint = @"GetContactInfo?cid=3";
+            string endpoint = @"AddUser";
+
+
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api + endpoint);
             object resp = null;
@@ -81,7 +88,7 @@ namespace DebuggingConsole
                 resp = JsonConvert.DeserializeObject(str);
             }
             
-
+            */
 
 
         }
