@@ -14,3 +14,12 @@ http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/UpdateConta
 
 Deletes a contact based on the contact Id
 http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteContact?cId={conId}
+
+Retrieves a contact's details based on the ContactId
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetContactInfo?cId={conId}
+
+Adds a new user via post - JSON Format in the JsonContract file
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/AddUser
+
+Deletes a user via GET
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteUser?uId={userId}

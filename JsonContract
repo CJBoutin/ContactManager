@@ -42,3 +42,12 @@ PhoneInfo contains
     ["Cell","9542782404"]
   ]
 }
+
+# Adding a new user
+Fairly straightforward. Send this in a post request to the AddUser URI described in the API URIs file.
+{
+"UserName":"NewUser",
+"PasswordHash":"PHash"
+}
+
+
