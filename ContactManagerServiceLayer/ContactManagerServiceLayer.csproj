@@ -113,6 +113,7 @@
     <Compile Include="ContactManagerService.svc.cs">
       <DependentUpon>ContactManagerService.svc</DependentUpon>
     </Compile>
+    <Compile Include="DataClasses\AdvancedContact.cs" />
     <Compile Include="DataClasses\BasicContact.cs" />
     <Compile Include="IContactManagerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

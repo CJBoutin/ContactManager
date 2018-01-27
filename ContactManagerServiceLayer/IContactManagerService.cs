@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ContactManagerServiceLayer
 {
@@ -23,6 +24,16 @@ namespace ContactManagerServiceLayer
 
         [DataMember]
         public List<List<string>> PhoneInfo = new List<List<string>>();
+    }
+
+    [DataContract]
+    public class UserData
+    {
+        [DataMember]
+        public string UserName { get; set; }
+
+        [DataMember]
+        public string PasswordHash { get; set; }
     }
         // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "IService1" in both code and config file together.
         [ServiceContract]
@@ -46,6 +57,25 @@ namespace ContactManagerServiceLayer
             Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "UpdateContact")]
         string UpdateContact(ContactData cData);
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
+            Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "AddUser")]
+        string AddUser(UserData uData);
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
+        Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "DeleteUser?uId={userId}")]
+        string DeleteUser(string userId);
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
+        Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "GetContactInfo?cId={conId}")]
+        Task<string> GetContactInfo(string conId);
+
 
 
         [OperationContract]

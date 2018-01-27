@@ -16,7 +16,7 @@ namespace DebuggingConsole
     {
         static void Main(string[] args)
         {
-            
+            /*
             Requests request = new Requests();
             Dictionary<string, dynamic> jsonInfo = new Dictionary<string, dynamic>();
             List<string> dict = new List<string>();
@@ -66,11 +66,10 @@ namespace DebuggingConsole
             
             string json = JsonConvert.SerializeObject(jsonInfo);
             var response = request.PostContent(json, "UpdateContact").Result;
-            
+            */
 
-            /*
             string api = ConfigurationManager.AppSettings["apiConnection"].ToString();
-            string endpoint = @"DeleteContact?cid=2";
+            string endpoint = @"GetContactInfo?cid=3";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api + endpoint);
             object resp = null;
@@ -81,7 +80,9 @@ namespace DebuggingConsole
                 var str = strReader.ReadToEnd();
                 resp = JsonConvert.DeserializeObject(str);
             }
-            */
+            
+
+
 
         }
 
