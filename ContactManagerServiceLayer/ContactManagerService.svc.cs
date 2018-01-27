@@ -10,6 +10,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ContactManagerServiceLayer
 {
@@ -24,8 +25,7 @@ namespace ContactManagerServiceLayer
 
         public string NewContact(ContactData cData)
         {
-            string s = "";
-
+            Dictionary<string, string> resp = new Dictionary<string, string>();
             var addressInfo = cData.AddressInfo;
             var emailInfo = cData.EmailInfo;
             var businessInfo = cData.BusinessInfo;
@@ -87,14 +87,17 @@ namespace ContactManagerServiceLayer
                 }
                 MySqlCommand cmd = new MySqlCommand(fullQuery, connection);
                 cmd.ExecuteNonQuery();
-                s = "Success";
+
+                resp.Add("InsertStatus", "Success");
+                resp.Add("NewContactId", contactId.ToString());
+                
                 connection.Close();
             }
             catch(Exception e)
             {
                 return e.Message;
             }
-            return s;
+            return JsonConvert.SerializeObject(resp);
         }
 
         public string GetContacts(string userId)
@@ -223,6 +226,102 @@ namespace ContactManagerServiceLayer
             {
                 return "Failed";
             }
+        }
+
+        public string AddUser(UserData uData)
+        {
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+
+            string cmd = string.Format("INSERT INTO users(UserName, PasswordHash, DateCreated, DateModified) VALUES({0}, {1}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()); SELECT LAST_INSERT_ID();", DataManipulation.FormatForSql(uData.UserName), DataManipulation.FormatForSql(uData.PasswordHash));
+            MySqlCommand command = new MySqlCommand(cmd, connection);
+            int curUserId = Convert.ToInt32(command.ExecuteScalar());
+            Dictionary<string, string> resp = new Dictionary<string, string>();
+            resp.Add("UserId", curUserId.ToString());
+            return JsonConvert.SerializeObject(resp);
+        }
+
+        public string DeleteUser(string userId)
+        {
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+
+            MySqlCommand deleteUser = new MySqlCommand(string.Format("DELETE FROM users WHERE Id={0}", userId), connection);
+
+            deleteUser.ExecuteNonQuery();
+            return "Success";
+        }
+         public async Task<string> GetContactInfo(string conId)
+        {
+
+            Dictionary<string, string> response = new Dictionary<string, string>();
+            AdvancedContact contact = new AdvancedContact();
+            List<dynamic> contactItem = new List<dynamic>();
+
+
+            try
+            {
+                MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+                connection.Open();
+                string addressCmd = string.Format(@"SELECT * FROM addresses WHERE ContactInfoId={0};", conId);
+                string phoneCmd = string.Format(@"SELECT * FROM phonenumbers WHERE ContactInfoId={0};", conId);
+                string emailCmd = string.Format(@"SELECT * FROM email WHERE ContactInfoId={0};", conId);
+
+
+                MySqlCommand command = new MySqlCommand(addressCmd, connection);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    List<Dictionary<string, string>> dict = new List<Dictionary<string, string>>();
+                    while (reader.Read())
+                    {
+                        Dictionary<string, string> d = new Dictionary<string, string>();
+                        d.Add("EmailType", reader["AddressType"].ToString());
+                        d.Add("City", reader["City"].ToString());
+                        d.Add("Country", reader["Country"].ToString());
+                        d.Add("Province", reader["Province"].ToString());
+                        d.Add("StreetNumber", reader["StreetNumber"].ToString());
+                        d.Add("StreetName", reader["StreetName"].ToString());
+                        dict.Add(d);
+                    }
+                    contactItem.Add(dict);
+                }
+
+                command = new MySqlCommand(phoneCmd, connection);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    List<Dictionary<string, string>> dict = new List<Dictionary<string, string>>();
+                    while (reader.Read())
+                    {
+                        Dictionary<string, string> d = new Dictionary<string, string>();
+                        d.Add("NumberType", reader["NumberType"].ToString());
+                        d.Add("AreaCode", reader["AreaCode"].ToString());
+                        d.Add("SignificantNumber", reader["SignificantNumber"].ToString());
+                        dict.Add(d);
+
+                    }
+                    contactItem.Add(dict);
+                }
+
+                command = new MySqlCommand(emailCmd, connection);
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    List<Dictionary<string, string>> dict = new List<Dictionary<string, string>>();
+                    while (reader.Read())
+                    {
+                        Dictionary<string, string> d = new Dictionary<string, string>();
+                        d.Add("EmailType", reader["AddressType"].ToString());
+                        d.Add("EmailAddress", reader["Address"].ToString());
+                        dict.Add(d);
+                    }
+                    contactItem.Add(dict);
+                }
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+            string jsonObj = JsonConvert.SerializeObject(contactItem);
+            return jsonObj;
         }
 
     }
