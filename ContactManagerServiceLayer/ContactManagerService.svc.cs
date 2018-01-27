@@ -244,7 +244,7 @@ namespace ContactManagerServiceLayer
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
 
-            MySqlCommand deleteUser = new MySqlCommand(string.Format("CALL DeleteUser({0})", userId), connection);
+            MySqlCommand deleteUser = new MySqlCommand(string.Format("DELETE FROM users WHERE Id={0}", userId), connection);
 
             deleteUser.ExecuteNonQuery();
             return "Success";
