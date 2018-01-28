@@ -1,5 +1,6 @@
 
 
+
 # URIs for the API 
 
 Gets all contacts for a supplies User Id
@@ -28,3 +29,6 @@ http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteUser?
 
 Get a single user from the database. Returns the ID if successful
 http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetUser
+
+Get single contact
+http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetSingleContact?search={searchData}&uId={userId}
