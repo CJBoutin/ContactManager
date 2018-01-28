@@ -17,29 +17,34 @@ function login(){
     var userName = document.getElementById("loginName").value;
     var pWord = document.getElementById("loginPassword").value;
     
+    var loginURI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetUser"
+    
     document.getElementById("userName").innerHTML = "";
     
     
     //hash pword
-    var passHash =/*???*/;
+    var passHash = hash(pWord);
+    console.log(passHash);
     //How, never did this in JS
     //Hash on both sides in case someone hacks DB
     
-    var jsonSendData = '{"userName": "'+userName+'" , "passHash": "'+passHash+'"}';
+    var jsonSendData = '{"UserName": "'+userName+'" , "PasswordHash": "'+passHash+'"}';
     //var url = //how do i access the c# api files?
-    
+    console.log(jsonSendData);
     var loginRequest = new XMLHttpRequest();
-    loginRequest.open("POST", /*url*/, false);
+    loginRequest.open("POST", loginURI, false);
     loginRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         loginRequest.send(jsonSendData);
         
         var jsonObject = JSON.parse(loginRequest.responseText);
         
-        userID = jsonObject.id;
+        userID = jsonObject.UserId;
+        console.log(userID);
+        console.log(jsonObject);
         
         //single flag?
-        if(userID < 1){
+        if(userID < 0 || userID == null){
             document.getElementById("loginResult").innerHTML = "username and password do not match";
             return;
         }
@@ -99,7 +104,10 @@ function onCreateAccountTabClicked(){
     //hide current screen and show create account screen
     hideOrShow("loginDiv", false);
     hideOrShow("createAccDiv", true);
-    
+    hideOrShow("addDiv",false);
+    hideOrShow("searchDiv",false);
+    hideOrShow("loggedInDiv",false);
+    hideOrShow("delete",false);
 }
 
 function createAccount(){
@@ -107,11 +115,13 @@ function createAccount(){
     userID = 0;
     userName = "";
     
-    userName = document.getElementById("cUserName").value;
-    var pWord = document.getElementById("cPWord").value;
-    var checkPWord = document.getElementById("checkCPWord").value;
+    addUserAddr = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/AddUser";
     
-    if (pWord != checkCPWord){
+    userName = document.getElementById("cUserName").value;
+    var pWord = document.getElementById("cPassword").value;
+    var checkPWord = document.getElementById("checkCPassword").value;
+    
+    if (pWord != checkPWord){
         //update user with an error
         document.getElementById("checkCPWordLabel").innerHTML = "Passwords do not match";
         
@@ -119,27 +129,29 @@ function createAccount(){
     //do regex checks for field validity?
     
     //hash pword
-    var passHash = "";
+    var passHash = hash(pWord);
+    console.log(passHash);
     //exact same hash as in login
     
-    var jsonSendData = '{"UserName": "'+userName+'", "passHash": " '+passHash+'"}';
+    var jsonSendData = '{"UserName": "'+userName+'", "PasswordHash": "' +passHash+ '"}';
     
     //check if username already exists
     
     //add new account/check for conflicts
     //xml request
     var cAccRequest = new XMLHttpRequest();
-    cAccRequest.open("POST", /*???*/, true);
+    cAccRequest.open("POST", addUserAddr, false);
     cAccRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         cAccRequest.send(jsonSendData);
         
         var jsonObject = JSON.parse(cAccRequest.responseText);
         
-        userID = jsonObject.id;
-        
+        userID = jsonObject.UserId;
+        console.log(userID);
+        console.log(jsonObject);
         //single flag
-        if(userID < 1){
+        if(userID < 0 || userID == null){
             document.getElementById("cAccResponse").innerHTML = "username and password do not match";
             return;
         }
@@ -159,7 +171,7 @@ function createAccount(){
     hideOrShow("loggedInDiv", true);
     hideOrShow("addDiv", true);
     hideOrShow("searchDiv", true);
-    hideOrSHow("displayDiv", true);
+    hideOrShow("displayDiv", true);
     
 }
 
@@ -173,21 +185,36 @@ function addContact(){
     var mobilePhone = document.getElementById("mobilePhone").value;
     var workPhone = document.getElementById("workPhone").value;
     var otherPhone = document.getElementById("otherPhone").value;
-    var homeEmail = document.getElementById("homeEmail").value;
+    var homeEmail = document.getElementById("personalEmail").value;
     var workEmail = document.getElementById("workEmail").value;
     var otherEmail = document.getElementById("otherEmail").value;
-    var homeAddress = document.getElementById("homeAddress").value;
-    var workAddress = document.getElementById("workAddress").value;
-    var otherAddress = document.getElementById("otherAddress").value;
+    //address info
+    var homeAddress = [document.getElementById("homeAddressNum").value];
+    homeAddress.push(document.getElementById("homeAddressStreet").value);
+    homeAddress.push(document.getElementById("homeAddressCity").value);
+    homeAddress.push(document.getElementById("homeAddressCountry").value);
+    homeAddress.push(document.getElementById("homeAddressProvince").value);
+    var workAddress = [document.getElementById("workAddressNum").value];
+    workAddress.push(document.getElementById("workAddressStreet").value);
+    workAddress.push(document.getElementById("workAddressCity").value);
+    workAddress.push(document.getElementById("workAddressCountry").value);
+    workAddress.push(document.getElementById("workAddressProvince").value);
+    var otherAddress = [document.getElementById("otherAddressNum").value];
+    otherAddress.push(document.getElementById("otherAddressStreet").value);
+    otherAddress.push(document.getElementById("otherAddressCity").value);
+    otherAddress.push(document.getElementById("otherAddressCountry").value);
+    otherAddress.push(document.getElementById("otherAddressProvince").value);
     
-    
+    homeAddress.unshift("home");
+    workAddress.unshift("work");
+    otherAddress.unshift("other");
     
     //populate with contact info
     
     //var jsonSendData = {"UserId": userID, "FirstName": firstName, "LastName": lastName, "homePhone": homePhone, "workPhone": workPhone,  "otherPhone": otherPhone, "homeEmail": homeEmail};
     
     
-     var jsonSendData = {"BusinessInfo": [firstName,lastName], "PhoneInfo": [["work",workPhone],["home",homePhone],["mobile",mobilePhone],["other",otherPhone]], "AddressInfo": [["home", homeAddress], ["work", workAddress], ["other",otherAddress]], "EmailInfo": [["personal", homeEmail], ["work", workEmail], ["other", otherEmail]]};
+     var jsonSendData = {"BusinessInfo": [userID, firstName,lastName], "PhoneInfo": [["work",workPhone],["home",homePhone],["mobile",mobilePhone],["other",otherPhone]], "AddressInfo": [homeAddress, workAddress, otherAddress], "EmailInfo": [["personal", homeEmail], ["work", workEmail], ["other", otherEmail]]};
     
     //or restructure formatting again to be JSON within arrays within JSON:
     
@@ -199,7 +226,7 @@ function addContact(){
      
     //wait until i know right order
     jsonSendData = JSON.stringify(jsonSendData);
-    
+    console.log(jsonSendData);
     //xml request
     var addRequest = new XMLHttpRequest();
     addRequest.open("POST", addAPI, true);
@@ -221,13 +248,14 @@ function addContact(){
 }
 
 //redundant?
+/*
 function displayContacts(){
     
     //get contact list and output table?
     
     //xml request
     var listRequest = new XMLHttpRequest();
-    listRequest.open("POST", /*???*/, true);
+    listRequest.open("POST", ???, true);
     listRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         listRequest.onreadystatechange = function(){
@@ -248,7 +276,7 @@ function displayContacts(){
         
     }
     
-}
+}*/
 
 function searchContacts(){
     
@@ -346,7 +374,7 @@ function searchContacts(){
 
 function deleteContact(contactID){
     //figure out the correct order for JSON
-    var jsonSendData = {"contactID": contactID, "userID", userID};
+    var jsonSendData = {"contactID": contactID, "userID": userID};
     
     var delAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteContact?cId=" + contactID;
     
@@ -403,8 +431,12 @@ function hideOrShow(elementID, newState){
         var display = "none";
     }
     
-    document.getElementById( elementId ).style.visibility = visibility;
-    document.getElementById( elementId ).style.display = display;
+    document.getElementById( elementID ).style.visibility = visibility;
+    document.getElementById( elementID ).style.display = display;
+}
+
+function hash(pWord){
+    return CryptoJS.MD5(pWord).toString();
 }
 
 
