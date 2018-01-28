@@ -83,8 +83,8 @@ namespace ContactManagerServiceLayer
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
         Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
-        UriTemplate = "GetSingleContact?search={searchData}")]
-        string GetSingleContact(string searchData);
+        UriTemplate = "GetSingleContact?search={searchData}&uId={userId}")]
+        string GetSingleContact(string searchData, string userId);
 
         // Get all contacts belonging to a user
         [OperationContract]

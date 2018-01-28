@@ -66,22 +66,23 @@ namespace DebuggingConsole
             jsonInfo.Add("EmailInfo", eList);
             jsonInfo.Add("PhoneInfo", pList);
             */
+            /*
              Dictionary<string, string> req = new Dictionary<string, string>();
             req.Add("UserName", "bcoles2");
             req.Add("PasswordHash", "81dc9bdb52d04dc20036dbd8313ed055");
 
             string json = JsonConvert.SerializeObject(req);
             var response = request.PostContent(json, "GetUser").Result;
+            */
             
-            /*
             string api = ConfigurationManager.AppSettings["apiConnection"].ToString();
-            string endpoint = @"AddUser";
+            string endpoint = @"GetSingleContact?search=k&uId=5";
 
 
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(api + endpoint);
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(api + endpoint);
             object resp = null;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse)req.GetResponse())
             {
                 var stream = response.GetResponseStream();
                 StreamReader strReader = new StreamReader(stream);
@@ -89,7 +90,7 @@ namespace DebuggingConsole
                 resp = JsonConvert.DeserializeObject(str);
             }
             
-            */
+            
 
 
         }

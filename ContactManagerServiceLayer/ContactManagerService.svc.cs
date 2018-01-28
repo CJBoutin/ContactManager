@@ -31,11 +31,12 @@ namespace ContactManagerServiceLayer
             var emailInfo = cData.EmailInfo;
             var businessInfo = cData.BusinessInfo;
             var phoneInfo = cData.PhoneInfo;
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+
             try
             {
 
                 // Insert the new contact into the SQL Database
-                MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
                 connection.Open();
                 // Insert the new contact data
                 // Contact will be guaranteed a first name. Other data must be set to 'null' if null.
@@ -51,6 +52,7 @@ namespace ContactManagerServiceLayer
 
                 foreach (var item in addressInfo)
                 {
+                    if (item.Contains(null) || item.Contains("")) continue;
                     string insertAddress = string.Format("CALL InsertAddress({0}, {1}, {2}, {3}, {4}, {5}, {6});",
                     DataManipulation.FormatForSql(contactId.ToString()),
                     DataManipulation.FormatForSql(item[0]),
@@ -64,6 +66,7 @@ namespace ContactManagerServiceLayer
                 }
                 foreach (var item in emailInfo)
                 {
+                    if (item.Contains(null) || item.Contains("")) continue;
                     string insertEmail = string.Format("CALL InsertEmail({0}, {1}, {2});",
                         DataManipulation.FormatForSql(contactId.ToString()),
                         DataManipulation.FormatForSql(item[0]),
@@ -73,6 +76,7 @@ namespace ContactManagerServiceLayer
                 }
                 foreach (var item in phoneInfo)
                 {
+                    if (item.Contains(null) || item.Contains("")) continue;
                     string ACode = item[1].Substring(0, 3);
                     string sigNumber = item[1].Substring(3, 7);
                     string extension = item[1].Substring(10, item[1].Length - 10);
@@ -91,12 +95,14 @@ namespace ContactManagerServiceLayer
 
                 resp.Add("InsertStatus", "Success");
                 resp.Add("NewContactId", contactId.ToString());
-                
-                connection.Close();
             }
             catch(Exception e)
             {
                 return JsonConvert.SerializeObject(e);
+            }
+            finally
+            {
+                connection.Close();
             }
             return JsonConvert.SerializeObject(resp);
         }
@@ -218,6 +224,7 @@ namespace ContactManagerServiceLayer
             {
                 connection.Open();
                 a = command.ExecuteNonQuery();
+                return "Success!";
             }
             catch(Exception e)
             {
@@ -226,14 +233,6 @@ namespace ContactManagerServiceLayer
             finally
             {
                 connection.Close();
-                    }
-            if(a > 0)
-            {
-                return "Success";
-            }
-            else
-            {
-                return "Failed";
             }
         }
 
@@ -255,6 +254,7 @@ namespace ContactManagerServiceLayer
             }
             catch (Exception e)
             {
+
                 return JsonConvert.SerializeObject(e);
             }
             finally
@@ -369,19 +369,20 @@ namespace ContactManagerServiceLayer
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
             Dictionary<string, string> dict = new Dictionary<string, string>();
-
+            string erString = "";
             try
             {
-
+                
                 string command = string.Format("SELECT * FROM users WHERE UserName={0} AND PasswordHash={1};", 
                     DataManipulation.FormatForSql(uData.UserName),
                     DataManipulation.FormatForSql(uData.PasswordHash));
-
+                erString += command + " ";
                 MySqlCommand cmd = new MySqlCommand(command, connection);
 
                 string id = "-1";
-
+                erString += "opening connection ";
                 connection.Open();
+                erString += "opened connection ";
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (reader.Read())
@@ -393,7 +394,8 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return JsonConvert.SerializeObject(e);
+                return erString;
+                //return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -403,30 +405,40 @@ namespace ContactManagerServiceLayer
 
         }
 
-        public string GetSingleContact(string searchData)
+        public string GetSingleContact(string searchData, string userId)
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
             string response = "";
-
-            string query = string.Format("SELECT * FROM contactinfo WHERE FirstName LIKE '%{0}%' OR LastName LIKE '%{1}%';", searchData);
-
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-
-            List<BasicContact> resList = new List<BasicContact>();
-            using (MySqlDataReader reader = cmd.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                connection.Open();
+                string query = string.Format("SELECT * FROM contactinfo WHERE UserId={0} AND (FirstName LIKE '%{1}%' OR LastName LIKE '%{2}%');", userId, searchData, searchData);
+
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                List<BasicContact> resList = new List<BasicContact>();
+                using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
-                    BasicContact contact = new BasicContact();
-                    contact.Id = int.Parse(reader["Id"].ToString());
-                    contact.FirstName = reader["FirstName"].ToString();
-                    contact.LastName = reader["LastName"].ToString();
-                    resList.Add(contact);
+                    while (reader.Read())
+                    {
+                        BasicContact contact = new BasicContact();
+                        contact.Id = int.Parse(reader["Id"].ToString());
+                        contact.FirstName = reader["FirstName"].ToString();
+                        contact.LastName = reader["LastName"].ToString();
+                        resList.Add(contact);
+                    }
                 }
+                response = JsonConvert.SerializeObject(resList);
+                return response;
             }
-            connection.Close();
-            response = JsonConvert.SerializeObject(resList);
-            return response;
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(e);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
     }
