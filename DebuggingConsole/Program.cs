@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ContactManagerServiceLayer.BusinessLogic;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,7 +17,7 @@ namespace DebuggingConsole
     {
         static void Main(string[] args)
         {
-            
+            DataManipulation.FormatForSql("stri-ng");
             Requests request = new Requests();
             /*
             Dictionary<string, dynamic> jsonInfo = new Dictionary<string, dynamic>();
@@ -66,8 +67,8 @@ namespace DebuggingConsole
             jsonInfo.Add("PhoneInfo", pList);
             */
              Dictionary<string, string> req = new Dictionary<string, string>();
-            req.Add("UserName", "sftga");
-            req.Add("PasswordHash", "PHash");
+            req.Add("UserName", "bcoles2");
+            req.Add("PasswordHash", "81dc9bdb52d04dc20036dbd8313ed055");
 
             string json = JsonConvert.SerializeObject(req);
             var response = request.PostContent(json, "GetUser").Result;

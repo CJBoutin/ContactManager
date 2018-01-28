@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -95,7 +96,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             return JsonConvert.SerializeObject(resp);
         }
@@ -197,7 +198,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -220,7 +221,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -239,14 +240,27 @@ namespace ContactManagerServiceLayer
         public string AddUser(UserData uData)
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
-            connection.Open();
-            string cmd = string.Format("INSERT INTO users(UserName, PasswordHash, DateCreated, DateModified) VALUES({0}, {1}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()); SELECT LAST_INSERT_ID();", DataManipulation.FormatForSql(uData.UserName), DataManipulation.FormatForSql(uData.PasswordHash));
-            MySqlCommand command = new MySqlCommand(cmd, connection);
-            int curUserId = Convert.ToInt32(command.ExecuteScalar());
-            Dictionary<string, string> resp = new Dictionary<string, string>();
-            resp.Add("UserId", curUserId.ToString());
-            connection.Close();
-            return JsonConvert.SerializeObject(resp);
+            try
+            {
+                connection.Open();
+                string cmd = string.Format("INSERT INTO users(UserName, PasswordHash, DateCreated, DateModified) VALUES({0}, {1}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()); SELECT LAST_INSERT_ID();", 
+                    DataManipulation.FormatForSql(uData.UserName), 
+                    DataManipulation.FormatForSql(uData.PasswordHash));
+
+                MySqlCommand command = new MySqlCommand(cmd, connection);
+                int curUserId = Convert.ToInt32(command.ExecuteScalar());
+                Dictionary<string, string> resp = new Dictionary<string, string>();
+                resp.Add("UserId", curUserId.ToString());
+                return JsonConvert.SerializeObject(resp);
+            }
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(e);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
         public string DeleteUser(string userId)
@@ -262,7 +276,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -341,7 +355,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -359,11 +373,13 @@ namespace ContactManagerServiceLayer
             try
             {
 
-                string command = string.Format("SELECT * FROM users WHERE UserName={0} AND PasswordHash={1};", DataManipulation.FormatForSql(uData.UserName), DataManipulation.FormatForSql(uData.PasswordHash));
+                string command = string.Format("SELECT * FROM users WHERE UserName={0} AND PasswordHash={1};", 
+                    DataManipulation.FormatForSql(uData.UserName),
+                    DataManipulation.FormatForSql(uData.PasswordHash));
 
                 MySqlCommand cmd = new MySqlCommand(command, connection);
 
-                string id = null;
+                string id = "-1";
 
                 connection.Open();
                 using (var reader = await cmd.ExecuteReaderAsync())
@@ -377,7 +393,7 @@ namespace ContactManagerServiceLayer
             }
             catch(Exception e)
             {
-                return e.Message;
+                return JsonConvert.SerializeObject(e);
             }
             finally
             {
@@ -387,13 +403,30 @@ namespace ContactManagerServiceLayer
 
         }
 
-        public Task<string> GetSingleContact(string searchData)
+        public string GetSingleContact(string searchData)
         {
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+            string response = "";
 
-            string query = string.Format("SELECT Id, FirstName, LastName FROM contactinfo WHERE FirstName LIKE '%{0}%' OR LastName LIKE '%{1}%';", searchData);
+            string query = string.Format("SELECT * FROM contactinfo WHERE FirstName LIKE '%{0}%' OR LastName LIKE '%{1}%';", searchData);
 
-            return null;
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+
+            List<BasicContact> resList = new List<BasicContact>();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    BasicContact contact = new BasicContact();
+                    contact.Id = int.Parse(reader["Id"].ToString());
+                    contact.FirstName = reader["FirstName"].ToString();
+                    contact.LastName = reader["LastName"].ToString();
+                    resList.Add(contact);
+                }
+            }
+            connection.Close();
+            response = JsonConvert.SerializeObject(resList);
+            return response;
         }
 
     }

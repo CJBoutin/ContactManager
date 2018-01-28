@@ -39,62 +39,68 @@ namespace ContactManagerServiceLayer
         [ServiceContract]
     public interface IContactManagerService
     {
-
+        // Asks the WCF service if it's alive
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "IsAlive")]
             string IsAlive();
-
+        // Add a new contact with the ContactData contract
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "NewContact")]
         string NewContact(ContactData cData);
 
+        // Updates a contact with the ContactData contract
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "UpdateContact")]
         string UpdateContact(ContactData cData);
 
+        // Adds a user with the UserData contract
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "AddUser")]
         string AddUser(UserData uData);
-
+        // Deletes a user 
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
         Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "DeleteUser?uId={userId}")]
         string DeleteUser(string userId);
 
+        // Gets info for a specific contact given a contact Id
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
         Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "GetContactInfo?cId={conId}")]
         Task<string> GetContactInfo(string conId);
 
+        // Search for a single contact
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
         Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "GetSingleContact?search={searchData}")]
-        Task<string> GetSingleContact(string searchData);
+        string GetSingleContact(string searchData);
 
-
+        // Get all contacts belonging to a user
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "GetAllContacts?uId={userId}")]
         string GetContacts(string userId);
 
+        // Delete a contact given a contact Id
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
             Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "DeleteContact?cId={conId}")]
         string DeleteContact(string conId);
 
+        // Authenticate a user
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
         Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
