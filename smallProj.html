@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <script type="text/javascript" src="contactApp.js"></script>
-    <script src="rollups/md5.js"></script>
+    <script src="CryptoJS v3.1.2/rollups/md5.js"></script>
     <head>
         <title> Group 20 Small Project</title>
         <link href="css/smallProjectStyle.css" rel="stylesheet">
@@ -131,14 +131,16 @@
         <div id="searchDiv" style="width:100%" class="divLeft">
             <h2> Search for Contact Info </h2>
             <form action="" data-ajax="false">
-                Search Name: <input type="text" name="searchName"class="textBox">
-                Search Number: <input type="text" id="searchNumber"class="textBox"><br />
+                Search Name: <input type="text" name="searchName" class="textBox" id="searchName">
+                <!--Search Number: <input type="text" id="searchNumber"class="textBox"><br />-->
             </form>
             <button onClick="return searchContacts();"> Search </button>
             <span id="searchContactsResult"></span>
             
             <table id="contactTable" style="width: 1500px";"align: center" >
-                <!--insert table code here-->
+                
+            </table>
+            <table id="conDetails" style="width: 1500px";"align: center">
                 
             </table>
         </div>

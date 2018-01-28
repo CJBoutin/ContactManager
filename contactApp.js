@@ -37,11 +37,16 @@ function login(){
     try{
         loginRequest.send(jsonSendData);
         
+        console.log(loginRequest.responseText);
+        
         var jsonObject = JSON.parse(loginRequest.responseText);
+        
+        jsonObject = JSON.parse(jsonObject);
         
         userID = jsonObject.UserId;
         console.log(userID);
-        console.log(jsonObject);
+        //console.log(Object.keys(jsonObject));
+        //console.log(jsonObject);
         
         //single flag?
         if(userID < 0 || userID == null){
@@ -73,9 +78,11 @@ function login(){
         hideOrShow("loggedInDiv",true);
         hideOrShow("addDiv", true);
         hideOrShow("searchDiv", true);
-        hideOrSHow("displayDiv", true);
+        hideOrShow("createAccDiv", false);
+        //hideOrShow("displayDiv", true);
         
-    }catch(err){1
+    }catch(err){
+        console.log(err);
         document.getElementById("loginResult").innerHTML = err.message;
     }
 }
@@ -92,7 +99,7 @@ function logout(){
     hideOrShow("loginDiv", true);
     hideOrShow("addDiv", false);
     hideOrShow("searchDiv", false);
-    hideOrSHow("displayDiv", false);
+    hideOrShow("displayDiv", false);
 }
 
 function onCreateAccountTabClicked(){
@@ -146,9 +153,11 @@ function createAccount(){
         cAccRequest.send(jsonSendData);
         
         var jsonObject = JSON.parse(cAccRequest.responseText);
+        jsonObject = JSON.parse(jsonObject);
         
         userID = jsonObject.UserId;
         console.log(userID);
+        console.log(jsonObject.keys);
         console.log(jsonObject);
         //single flag
         if(userID < 0 || userID == null){
@@ -235,6 +244,12 @@ function addContact(){
         addRequest.onreadystatechange = function(){
             if (this.readyState == 4 && this.status == 200){
                 //read back some JSON data and tell the user if the thing was input correctly?
+                var jsonObject = JSON.parse(addRequest.responseText);
+                jsonObject = JSON.parse(addRequest.responseText);
+                
+                console.log(jsonObject);
+                
+                console.log(addRequest.responseText);
                 
                 document.getElementById("addContactResult").innerHTML = firstName + " " + lastName + " added successfully.";
             }
@@ -278,30 +293,93 @@ function displayContacts(){
     
 }*/
 
+function getContactInfo(contactID){
+   //need to parse this info...
+    
+    var retrieveAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetContactInfo?cId=" + contactID;
+    
+    
+    var retrieveRequest = new XMLHttpRequest();
+    retrieveRequest.open("GET", retrieveAPI, true);
+    try{
+        retrieveRequest.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                
+                var jsonObject = JSON.parse(retrieveRequest.responseText);
+                jsonObject = JSON.parse(jsonObject);
+                
+                var keys = Object.keys(jsonObject);
+                console.log(keys);
+                var tbody = document.createElement("tbody");
+                var row = document.createElement("tr");
+                for(var j = 0; j < jsonObject.BusinessInfo.length;j++){
+                    var cell = document.createElement("td");
+                    var cellData = document.createTextNode(jsonObject.BusinessInfo[j]);
+                    console.log(jsonObject.BusinessInfo[j]);
+                    cell.appendChild(cellData);
+                    row.appendChild(cell);
+                }
+               tbody.appendChild(row);
+                
+                row = document.createElement("tr");
+                for(var j = 0; j < jsonObject.PhoneInfo.length;j++){
+                    for(var k = 0; k < jsonObject.PhoneInfo[j].length;k++){
+                        var cell = document.createElement("td");
+                        var cellData = document.createTextNode(jsonObject.PhoneInfo[j][k]);
+                        console.log(jsonObject.PhoneInfo[j][k]);
+                        cell.appendChild(cellData);
+                        row.appendChild(cell);
+                    }
+                    tbody.appendChild(row);
+                }
+                
+                for(var j = 0; j < jsonObject.EmailInfo.length;j++){
+                    for(var k = 0; jsonObject.EmailInfo[i].length;k++){
+                        var cell = document.createElement("td");
+                        var cellData = document.createTextNode(jsonObject.EmailInfo[j][k]);
+                        console.log(jsonObject.EmailInfo[j][k]);
+                        cell.appendChild(cellData);
+                        row.appendChild(cell);
+                    }
+                    tbody.appendChild(row);
+                }
+                
+                document.getElementById("conDetails");
+            }
+        }
+        
+        
+    } catch(err) {
+        console.log(err);
+    }
+    
+    
+    
+}
+
 function searchContacts(){
     
-    var srchAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetAllContacts?uId=" + userID;
+    var srchElement = document.getElementById("searchName").value;
     
-    var srchElement = document.getElementById("searchElement").value;
+    var srchAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetSingleContact?search=" + srchElement + "&uId=" + userID;
     
-    contactTable = document.getElementById("contactTable");
+    //contactTable = document.getElementById("contactTable");
     
-    var jsonSendData = {"SearchElement": srchElement};
-    jsonSendData = JSON.stringify(jsonSendData);
+    //var jsonSendData = {"SearchElement": srchElement};
+    //jsonSendData = JSON.stringify(jsonSendData);
     
     //xml request
     var searchRequest = new XMLHttpRequest();
-    searchRequest.open("POST", srchAPI, true);
-    searchRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    searchRequest.open("GET", srchAPI, true);
+    //searchRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         searchRequest.onreadystatechange = function(){
             //check the state before doing this
             if (this.readyState == 4 && this.status == 200){
                 var jsonObject = JSON.parse(searchRequest.responseText);
-                
-                
-                var tabl = document.getElementById("ContactTable");
-                tabl.innerHTML = "";
+                jsonObject = JSON.parse(jsonObject);
+                /*var tabl = */document.getElementById("contactTable").innerHTML ="";
+                //tabl.innerHTML = "";
                 var tablbdy = document.createElement("tbody");
                 
                 //create table from JSON response
@@ -314,11 +392,32 @@ function searchContacts(){
                 //for now create the table (which will be hidden and certain rows displayed?
                 //or will we do a research?? (if so reevaluate how the code operates.
                 //im using jquery for the next project
+                var keys = Object.keys(jsonObject[0]);
+                var row = document.createElement("tr");
+                var cell = document.createElement("td");
+                var cellData = document.createTextNode(keys[j]);
+                console.log(keys[j]);
+                cell.appendChild(cellData);
+                row.appendChild(cell);
+                tablbdy.appendChild(row);
                 for(var i = 0; i < jsonObject.length;i++){
+                    
                     var row = document.createElement("tr");
                     
-                    //var keys = Object.keys(jsonObject[i]);
+                    console.log(jsonObject[i]);
                     console.log(keys);
+                        for(var j = 0; j < keys.length; j++){
+                                var cell = document.createElement("td");
+                                var cellData = document.createTextNode(jsonObject[i][keys[j]]);
+                                console.log(jsonObject[i][keys[j]]);
+                                cell.appendChild(cellData);
+                                row.appendChild(cell);
+                        }
+                    
+                    
+                    //var keys = Object.keys(jsonObject[i]);
+                    //console.log(keys);
+                    /*
                     for(var j = 0; j < jsonObject[i].BusinessInfo.length;j++){
                         var cell = document.createElement("td");
                         var cellData = document.createTextNode(jsonObject[i].BusinessInfo[j]);
@@ -340,33 +439,41 @@ function searchContacts(){
                         cell.appendChild(cellData);
                         row.appendChild(cell);
                     }
+                    */
                     var cell = document.createElement("td");
-                    var delButton = createElement("button");
+                    //var delButton = createElement("button");
                     /*delButton.innerHTML = X;
                     delButton.setAttribute("data-contactmanager-contactid", jsonObject[i].ContactId);
                     delButton.onClick = deleteContact(delButton.getAttribute("data-contactmanager-contactid"));
                      */
                     //or
                     
-                    cell.innerHTML = "<button onClick = \"deleteContact(" + jsonObject[i].ContactId + ")\" data-contactmanager-contactid = \"" + jsonObject[i].ContactId + "\">X</button>";
+                    cell.innerHTML = "<button onClick = \"deleteContact(" + jsonObject[i].Id + ")\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">X</button>";
+                
+                    row.appendChild(cell);
+                    cell.innerHTML = "<button onClick = \"getContactInfo(" + jsonObject[i].Id + ")\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">Details</button>";
                     
-                    var rowID = "row" + jsonObject[i].ContactId;
+                    cell = document.createElement("td");
+
+                    row.appendChild(getButton);
+                    
+                    var rowID = "row" + jsonObject[i].Id;
                     
                     row.setAttribute("id", rowID);
                     
                     tablbdy.appendChild(row);
                 }
-                tabl.appendChild(tablbdy);
+                document.getElementById("contactTable").appendChild(tablbdy);
                 //document.getElementById("tableSpan").appendChild(tabl);
             }
             
         }
-        searchRequest.send(jsonSendData);
+        searchRequest.send();
         
         
         
     }catch(err){
-        
+        console.log(err);
     }
     
 }
@@ -384,8 +491,8 @@ function deleteContact(contactID){
     
     //xml request
     var delRequest = new XMLHttpRequest();
-    delRequest.open("POST", delAPI, true);
-    delRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    delRequest.open("GET", delAPI, true);
+    //delRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         delRequest.onreadystatechange = function(){
             
@@ -409,9 +516,7 @@ function deleteContact(contactID){
             
         }
         
-        delRequest.send(jsonSendData); //cases for errors?
-        
-        var jsonObject = JSON.parse(delRequest.responseText);
+        delRequest.send(); //cases for errors?
         
     }catch(err){
         
