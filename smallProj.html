@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+    <script type="text/javascript" src="contactApp.js"></script>
+    <script src="CryptoJS v3.1.2/rollups/md5.js"></script>
+    <head>
+        <title> Group 20 Small Project</title>
+        <link href="css/smallProjectStyle.css" rel="stylesheet">
+            
+    </head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    th, td {
+        padding: 5px;
+        text-align: left;
+    }
+    </style>
+    
+    <body>
+        <h1> COP 4331 Group 20 Contact Manager </h1>
+        <div id="loggedInDiv">
+            <!--style="display:none; visibility:hidden;"-->
+            <span id="userName"></span><br />
+            <button type="button" id="logoutButton" class="buttons" onclick="return logout();"> Log Out </button>
+        </div>
+        
+        <div  id ="loginDiv" style="text-align:center">
+            Please login<br />
+            <form id="loginForm" action="">
+                Login:
+                <input type="text" id="loginName"><br />
+                    Password:
+                    <input type="password" id="loginPassword"<br />
+                    <br />
+                    </form>
+            <span id="loginResult"></span>
+            <button onClick="return login();"class="buttons"> Login </button>
+            <button onClick="return onCreateAccountTabClicked();"class="buttons"> Create Account </button>
+        </div>
+        
+        <div id="createAccDiv" >
+            <form action="" data-ajax="false">
+                <label for="cUserName">Desired Username:</label>
+                <input type="text" name="cUserName" class="textBox" id="cUserName"><br/>
+                <label for="cPassword">New Password:</label>
+                <input type="password" name="cPassword" class="textBox" id="cPassword"><br/>
+                <label for="checkCPassword">Confirm Password:</label>
+                <input type="password" name="checkCPassword"class="textBox"
+                            id="checkCPassword"><br/>
+            </form>
+            <span id="cAccResponse"></span>
+            <button onClick="return createAccount();" class="buttons">Create Account </button>
+        </div>
+        
+        <div id="delete" class="divRight">
+            <h2> Delete Contact </h2>
+            <p>
+            Search Contact to Delete: <input type="text" id="deleteContact"class="textBox">
+                <button type="button" class="buttons" onclick="return delete();"> Delete </button><br />
+                <span id="deleteResult"></span>
+                </p>
+                </div>
+        
+        <div id="addDiv" class="add">
+            <h2> Add Contact </h2>
+            <form action="" data-ajax="false">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" class="textBox" id="firstName"><br/>
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName"class="textBox" id="lastName"><br/>
+                <label for="addresses">Address(es):</label><br/>
+                <label id="addresses" for="homeAddress">Home:</label>
+                <label id="homeAddress" for="homeAddressNum">Street Number:</label>
+                <input type="text" name="homeAddressNum" class="textBox" id="homeAddressNum">
+                <label for="homeAddressStreet">Street:</label>
+                <input type="text" name="homeAddressStreet"class="textBox" id="homeAddressStreet">
+                <label for="homeAddressCity">City:</label>
+                <input type="text" name="homeAddressCity"class="textBox" id="homeAddressCity">
+                <label for="homeAddressCountry">Country:</label>
+                <input type="text" name="homeAddressCountry"class="textBox" id="homeAddressCountry">
+                <label for="homeAddressProvince">State/Province:</label>
+                <input type="text" name="homeAddressProvince"class="textBox" id="homeAddressProvince"><br/>
+                <label for="workAddress">Work:</label>
+                <label id="workAddress" for="workAddressNum">Street Number:</label>
+                <input type="text" name="workAddressNum"class="textBox" id="workAddressNum">
+                <label for="workAddressStreet">Street:</label>
+                <input type="text" name="workAddressStreet"class="textBox" id="workAddressStreet">
+                <label for="workAddressCity">City:</label>
+                <input type="text" name="workAddressCity"class="textBox" id="workAddressCity">
+                <label for="workAddressCountry">Country:</label>
+                <input type="text" name="workAddressCountry"class="textBox" id="workAddressCountry">
+                <label for="workAddressProvince">State/Province:</label>
+                <input type="text" name="workAddressProvince"class="textBox" id="workAddressProvince"><br/>
+                <label for="otherAddress">Other:</label>
+                <label id="otherAddress" for="otherAddressNum">Street Number:</label>
+                <input type="text" name="otherAddressNum"class="textBox" id="otherAddressNum">
+                <label for="otherAddressStreet">Street:</label>
+                <input type="text" name="otherAddressStreet"class="textBox" id="otherAddressStreet">
+                <label for="otherAddressCity">City:</label>
+                <input type="text" name="otherAddressCity"class="textBox" id="otherAddressCity">
+                <label for="otherAddressCountry">Country:</label>
+                <input type="text" name="otherAddressCountry"class="textBox" id="otherAddressCountry">
+                <label for="otherAddressProvince">State/Province:</label>
+                <input type="text" name="otherAddressProvince"class="textBox" id="otherAddressProvince"><br/>
+                <label for="Emails">Email:</label><br/>
+                <label id="Emails" for="personalEmail">Personal:</label>
+                <input type="text" name="personalEmail" class="textBox" id="personalEmail"><br/>
+                <label for="workEmail">Work:</label>
+                <input type="text" name="workEmail" class="textBox" id="workEmail"><br/>
+                <label for="otherEmail">Other:</label>
+                <input type="text" name="otherEmail" class="textBox" id="otherEmail"><br/>
+                <label for="phones">Phone:</label><br/>
+                <label id="phones" for="homePhone">Home:</label>
+                <input type="text" name="homePhone"class="textBox" id="homePhone"><br/>
+                <label for="workPhone">Work:</label>
+                <input type="text" name="workPhone"class="textBox" id="workPhone"><br/>
+                <label for="mobilePhone">Mobile:</label>
+                <input type="text" name="mobilePhone"class="textBox" id="mobilePhone"><br/>
+                <label for="otherPhone">Other:</label>
+                <input type="text" name="otherPhone"class="textBox" id="otherPhone"><br/>
+            </form>
+            <button onclick="return addContact();" class="buttons"> Add Contact </button><br/>
+                                                                
+            <span id="addContactResult"></span>
+        </div>
+        
+        
+        <div id="searchDiv" style="width:100%" class="divLeft">
+            <h2> Search for Contact Info </h2>
+            <form action="" data-ajax="false">
+                Search Name: <input type="text" name="searchName"class="textBox">
+                Search Number: <input type="text" id="searchNumber"class="textBox"><br />
+            </form>
+            <button onClick="return searchContacts();"> Search </button>
+            <span id="searchContactsResult"></span>
+            
+            <table id="contactTable" style="width: 1500px";"align: center" >
+                <!--insert table code here-->
+                
+            </table>
+        </div>
+        
+        
+        
+    </body>
+</html>
