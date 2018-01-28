@@ -271,7 +271,8 @@ namespace ContactManagerServiceLayer
             }
             return "Success";
         }
-         public async Task<string> GetContactInfo(string conId)
+
+        public async Task<string> GetContactInfo(string conId)
         {
 
             Dictionary<string, string> response = new Dictionary<string, string>();
@@ -348,6 +349,51 @@ namespace ContactManagerServiceLayer
             }
             string jsonObj = JsonConvert.SerializeObject(contactItem);
             return jsonObj;
+        }
+
+        public async Task<string> GetUser(UserData uData)
+        {
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+
+            try
+            {
+
+                string command = string.Format("SELECT * FROM users WHERE UserName={0} AND PasswordHash={1};", DataManipulation.FormatForSql(uData.UserName), DataManipulation.FormatForSql(uData.PasswordHash));
+
+                MySqlCommand cmd = new MySqlCommand(command, connection);
+
+                string id = null;
+
+                connection.Open();
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        id = reader["Id"].ToString();
+                    }
+                }
+                dict.Add("UserId", id);
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject(dict);
+
+        }
+
+        public Task<string> GetSingleContact(string searchData)
+        {
+            MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
+
+            string query = string.Format("SELECT Id, FirstName, LastName FROM contactinfo WHERE FirstName LIKE '%{0}%' OR LastName LIKE '%{1}%';", searchData);
+
+            return null;
         }
 
     }

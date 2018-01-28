@@ -66,11 +66,11 @@ namespace DebuggingConsole
             jsonInfo.Add("PhoneInfo", pList);
             */
              Dictionary<string, string> req = new Dictionary<string, string>();
-            req.Add("UserName", "NewUser");
+            req.Add("UserName", "sftga");
             req.Add("PasswordHash", "PHash");
 
             string json = JsonConvert.SerializeObject(req);
-            var response = request.PostContent(json, "AddUser").Result;
+            var response = request.PostContent(json, "GetUser").Result;
             
             /*
             string api = ConfigurationManager.AppSettings["apiConnection"].ToString();

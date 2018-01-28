@@ -76,6 +76,11 @@ namespace ContactManagerServiceLayer
         UriTemplate = "GetContactInfo?cId={conId}")]
         Task<string> GetContactInfo(string conId);
 
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
+        Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "GetSingleContact?search={searchData}")]
+        Task<string> GetSingleContact(string searchData);
 
 
         [OperationContract]
@@ -89,6 +94,12 @@ namespace ContactManagerServiceLayer
             Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "DeleteContact?cId={conId}")]
         string DeleteContact(string conId);
+
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,
+        Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "GetUser")]
+        Task<string> GetUser(UserData uData);
 
     }
 
