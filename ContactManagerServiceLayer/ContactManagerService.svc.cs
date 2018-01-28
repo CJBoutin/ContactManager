@@ -112,30 +112,40 @@ namespace ContactManagerServiceLayer
             string response = "";
             int id = -1;
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
-
-            bool s = int.TryParse(userId, out id);
-            if(s == false)
+            try
             {
-                return "Failed";
-            }
-            var cmd = new MySqlCommand(string.Format("CALL GetAllContacts({0});", id), connection);
-
-            connection.Open();
-            List<BasicContact> resList = new List<BasicContact>();
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {                
-                while (reader.Read())
+                bool s = int.TryParse(userId, out id);
+                if (s == false)
                 {
-                    BasicContact contact = new BasicContact();
-                    contact.Id = int.Parse(reader["Id"].ToString()); 
-                    contact.FirstName = reader["FirstName"].ToString();
-                    contact.LastName = reader["LastName"].ToString();
-                    resList.Add(contact);
+                    return "Failed";
                 }
+                var cmd = new MySqlCommand(string.Format("CALL GetAllContacts({0});", id), connection);
+
+                connection.Open();
+                List<BasicContact> resList = new List<BasicContact>();
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        BasicContact contact = new BasicContact();
+                        contact.Id = int.Parse(reader["Id"].ToString());
+                        contact.FirstName = reader["FirstName"].ToString();
+                        contact.LastName = reader["LastName"].ToString();
+                        resList.Add(contact);
+                    }
+                }
+
+                response = JsonConvert.SerializeObject(resList);
+                return response;
             }
-            connection.Close();
-            response = JsonConvert.SerializeObject(resList);
-            return response;
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(e);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
         public string UpdateContact(ContactData cData)
