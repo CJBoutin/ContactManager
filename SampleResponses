@@ -1,7 +1,8 @@
 # Sample Responses
 
-/ContactManagerService.svc/GetContactInfo?cId=14
+/ContactManagerService.svc/GetContactInfo?cId={conId}
 "[[{\"EmailType\":\"home\",\"City\":\"B\",\"Country\":\"C\",\"Province\":\"D\",\"StreetNumber\":\"12345\",\"StreetName\":\"A\"}],[{\"NumberType\":\"work\",\"AreaCode\":\"123\",\"SignificantNumber\":\"4567890\"},{\"NumberType\":\"home\",\"AreaCode\":\"123\",\"SignificantNumber\":\"4567890\"},{\"NumberType\":\"mobile\",\"AreaCode\":\"123\",\"SignificantNumber\":\"4567890\"},{\"NumberType\":\"other\",\"AreaCode\":\"123\",\"SignificantNumber\":\"4567890\"}],[{\"EmailType\":\"personal\",\"EmailAddress\":\"kp@email.com\"}]]"
 
 /ContactManagerService.svc/DeleteContact?cId={conId}
+"Success!"
 
