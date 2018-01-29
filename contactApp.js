@@ -334,7 +334,7 @@ function getContactInfo(contactID){
                 var row = document.createElement("tr");
                 var keys = Object.keys(jsonObject.BusinessInfo);
                 console.log(keys);
-                for(var j = 0; j < keys.length;j++){
+                for(var j = 1; j < keys.length;j++){
                     var cell = document.createElement("td");
                     var cellData = document.createTextNode(jsonObject.BusinessInfo[keys[j]]);
                     console.log(jsonObject.BusinessInfo[keys[j]]);
@@ -346,14 +346,22 @@ function getContactInfo(contactID){
                 for(var j = 0; j < jsonObject.PhoneInfo.length;j++){
                     row = document.createElement("tr");
                     keys = Object.keys(jsonObject.PhoneInfo[j]);
-                    console.log(keys);
+                    console.log(keys);/*
                     for(var k = 0; k < keys.length;k++){
                         var cell = document.createElement("td");
                         var cellData = document.createTextNode(jsonObject.PhoneInfo[j][keys[k]]);
                         console.log(jsonObject.PhoneInfo[j][keys[k]]);
                         cell.appendChild(cellData);
                         row.appendChild(cell);
-                    }
+                    }*/
+                    var cell = document.createElement("td");
+                    var cellData = document.createTextNode(jsonObject.PhoneInfo[j][keys[0]]);
+                    cell.appendChild(cellData);
+                    row.appendChild(cell);
+                    cell = document.createElement("td");
+                    cellData = document.createTextNode("("+jsonObject.PhoneInfo[j][keys[1]]+ ")"+jsonObject.PhoneInfo[j][keys[2]]);
+                    cell.appendChild(cellData);
+                    row.appendChild(cell);
                     tbody.appendChild(row);
                 }
                 
@@ -374,9 +382,9 @@ function getContactInfo(contactID){
                 
                 document.getElementById("conDetails").appendChild(tbody);
                 
-                delButton = document.createElement("span");
+                /*delButton = document.createElement("span");
                 delButton.innerHTML = "<button onclick=\"return remDetails();\">X</button>";
-                document.getElementById("conDetails").appendChild(delButton);
+                document.getElementById("conDetails").appendChild(delButton);*/
 
                 hideOrShow("contactTable", false);
             }
@@ -408,6 +416,7 @@ function searchContacts(){
     var srchAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetSingleContact?search=" + srchElement + "&uId=" + userID;
     
     document.getElementById("searchName").value = "";
+    document.getElementById("contactTable").innerHTML ="";
     
     //contactTable = document.getElementById("contactTable");
     
@@ -424,8 +433,7 @@ function searchContacts(){
             if (this.readyState == 4 && this.status == 200){
                 var jsonObject = JSON.parse(searchRequest.responseText);
                 jsonObject = JSON.parse(jsonObject);
-                /*var tabl = */document.getElementById("contactTable").innerHTML ="";
-                //tabl.innerHTML = "";
+                document.getElementById("contactTable").innerHTML ="";
                 var tablbdy = document.createElement("tbody");
                 
                 //create table from JSON response
@@ -440,7 +448,7 @@ function searchContacts(){
                 //im using jquery for the next project
                 var keys = Object.keys(jsonObject[0]);
                 var row = document.createElement("tr");
-                for(var j = 0; j < keys.length;j++){
+                for(var j = 0; j < keys.length - 1;j++){
                     var cell = document.createElement("td");
                     var cellData = document.createTextNode(keys[j]);
                     console.log(keys[j]);
@@ -454,7 +462,7 @@ function searchContacts(){
                     
                     console.log(jsonObject[i]);
                     console.log(keys);
-                        for(var j = 0; j < keys.length; j++){
+                        for(var j = 0; j < keys.length -1; j++){
                                 var cell = document.createElement("td");
                                 var cellData = document.createTextNode(jsonObject[i][keys[j]]);
                                 console.log(jsonObject[i][keys[j]]);
@@ -462,32 +470,6 @@ function searchContacts(){
                                 row.appendChild(cell);
                         }
                     
-                    
-                    //var keys = Object.keys(jsonObject[i]);
-                    //console.log(keys);
-                    /*
-                    for(var j = 0; j < jsonObject[i].BusinessInfo.length;j++){
-                        var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject[i].BusinessInfo[j]);
-                        console.log(jsonObject[i].BusinessInfo[j]);
-                        cell.appendChild(cellData);
-                        row.appendChild(cell);
-                    }
-                    for(var j = 0; j < jsonObject[i].PhoneInfo.length;j++){
-                        var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject[i].PhoneInfo[j]);
-                        console.log(jsonObject[i].PhoneInfo[j]);
-                        cell.appendChild(cellData);
-                        row.appendChild(cell);
-                    }
-                    for(var j = 0; j < jsonObject[i].EmailInfo.length;j++){
-                        var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject[i].EmailInfo[j]);
-                        console.log(jsonObject[i].EmailInfo[j]);
-                        cell.appendChild(cellData);
-                        row.appendChild(cell);
-                    }
-                    */
                     var cell = document.createElement("td");
                     //var delButton = createElement("button");
                     /*delButton.innerHTML = X;
