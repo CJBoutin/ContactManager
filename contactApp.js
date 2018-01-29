@@ -296,6 +296,8 @@ function displayContacts(){
 function getContactInfo(contactID){
    //need to parse this info...
     
+   // console.log("called function");
+    
     var retrieveAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetContactInfo?cId=" + contactID;
     
     
@@ -307,7 +309,8 @@ function getContactInfo(contactID){
                 
                 var jsonObject = JSON.parse(retrieveRequest.responseText);
                 jsonObject = JSON.parse(jsonObject);
-                
+                console.log(retrieveRequest.responseText);
+                console.log(jsonObject);
                 var keys = Object.keys(jsonObject);
                 console.log(keys);
                 var tbody = document.createElement("tbody");
@@ -347,6 +350,7 @@ function getContactInfo(contactID){
                 document.getElementById("conDetails");
             }
         }
+        retrieveRequest.send();
         
         
     } catch(err) {
@@ -394,11 +398,13 @@ function searchContacts(){
                 //im using jquery for the next project
                 var keys = Object.keys(jsonObject[0]);
                 var row = document.createElement("tr");
-                var cell = document.createElement("td");
-                var cellData = document.createTextNode(keys[j]);
-                console.log(keys[j]);
-                cell.appendChild(cellData);
-                row.appendChild(cell);
+                for(var j = 0; j < keys.length;j++){
+                    var cell = document.createElement("td");
+                    var cellData = document.createTextNode(keys[j]);
+                    console.log(keys[j]);
+                    cell.appendChild(cellData);
+                    row.appendChild(cell);
+                }
                 tablbdy.appendChild(row);
                 for(var i = 0; i < jsonObject.length;i++){
                     
@@ -448,15 +454,13 @@ function searchContacts(){
                      */
                     //or
                     
-                    cell.innerHTML = "<button onClick = \"deleteContact(" + jsonObject[i].Id + ")\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">X</button>";
+                    cell.innerHTML = "<button onClick = \"return deleteContact(" + jsonObject[i].Id + ");\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">X</button>";
                 
                     row.appendChild(cell);
-                    cell.innerHTML = "<button onClick = \"getContactInfo(" + jsonObject[i].Id + ")\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">Details</button>";
-                    
                     cell = document.createElement("td");
-
-                    row.appendChild(getButton);
+                    cell.innerHTML = "<button onClick = \"return getContactInfo(" + jsonObject[i].Id + ");\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">Details</button>";
                     
+                    row.appendChild(cell);
                     var rowID = "row" + jsonObject[i].Id;
                     
                     row.setAttribute("id", rowID);
