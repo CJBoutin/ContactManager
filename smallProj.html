@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
     <script type="text/javascript" src="contactApp.js"></script>
@@ -20,20 +19,17 @@
     </style>
     
     <body>
-        <h1> COP 4331 Group 20 Contact Manager </h1>
-        <div id="loggedInDiv">
+        <div id="loggedInDiv" style="display:none; visibility:hidden;" >
             <!--style="display:none; visibility:hidden;"-->
-            <span id="userName"></span><br />
+            Logged in as: <span id="userName"></span><br />
             <button type="button" id="logoutButton" class="buttons" onclick="return logout();"> Log Out </button>
         </div>
         
         <div  id ="loginDiv" style="text-align:center">
-            Please login<br />
+            <h3>Please login</h3>
             <form id="loginForm" action="">
-                Login:
-                <input type="text" id="loginName"><br />
-                    Password:
-                    <input type="password" id="loginPassword"<br />
+                Login:<input type="text" id="loginName" class="depth" style="width:200px;"><br />
+                Password:<input type="password" id="loginPassword" class="depth" style="width:200px" ><br />
                     <br />
                     </form>
             <span id="loginResult"></span>
@@ -41,86 +37,86 @@
             <button onClick="return onCreateAccountTabClicked();"class="buttons"> Create Account </button>
         </div>
         
-        <div id="createAccDiv" >
+        <div id="createAccDiv" style="text-align:center; display:none; visibility:hidden;">
+		<h3> Create an account </h3>
             <form action="" data-ajax="false">
                 <label for="cUserName">Desired Username:</label>
-                <input type="text" name="cUserName" class="textBox" id="cUserName"><br/>
+                <input type="text" name="cUserName" class="depth" id="cUserName"><br/>
                 <label for="cPassword">New Password:</label>
-                <input type="password" name="cPassword" class="textBox" id="cPassword"><br/>
+                <input type="password" name="cPassword" class="depth" id="cPassword"><br/>
                 <label for="checkCPassword">Confirm Password:</label>
-                <input type="password" name="checkCPassword"class="textBox"
+                <input type="password" name="checkCPassword" class="depth"
                             id="checkCPassword"><br/>
             </form>
             <span id="cAccResponse"></span>
             <button onClick="return createAccount();" class="buttons">Create Account </button>
         </div>
         
-        <div id="delete" class="divRight">
-            <h2> Delete Contact </h2>
-            <p>
-            Search Contact to Delete: <input type="text" id="deleteContact"class="textBox">
+        <div id="delete"style="display:none; visibility:hidden;" >
+            <h3> Delete Contact </h3>
+            Search Contact to Delete: <input type="text" id="deleteContact" class="depth"><br />
                 <button type="button" class="buttons" onclick="return delete();"> Delete </button><br />
                 <span id="deleteResult"></span>
-                </p>
+                
                 </div>
         
-        <div id="addDiv" class="add">
-            <h2> Add Contact </h2>
+        <div id="addDiv" style="display:none; visibility:hidden;" >
+            <h3> Add Contact </h3>
             <form action="" data-ajax="false">
                 <label for="firstName">First Name:</label>
-                <input type="text" name="firstName" class="textBox" id="firstName"><br/>
+                <input type="text" name="firstName" class="depth" id="firstName"><br/>
                 <label for="lastName">Last Name:</label>
-                <input type="text" name="lastName"class="textBox" id="lastName"><br/>
+                <input type="text" name="lastName" class="depth" id="lastName"><br/>
                 <label for="addresses">Address(es):</label><br/>
                 <label id="addresses" for="homeAddress">Home:</label>
                 <label id="homeAddress" for="homeAddressNum">Street Number:</label>
-                <input type="text" name="homeAddressNum" class="textBox" id="homeAddressNum">
+                <input type="text" name="homeAddressNum"  class="depth" id="homeAddressNum">
                 <label for="homeAddressStreet">Street:</label>
-                <input type="text" name="homeAddressStreet"class="textBox" id="homeAddressStreet">
+                <input type="text" name="homeAddressStreet" class="depth" id="homeAddressStreet">
                 <label for="homeAddressCity">City:</label>
-                <input type="text" name="homeAddressCity"class="textBox" id="homeAddressCity">
+                <input type="text" name="homeAddressCity" class="depth" id="homeAddressCity">
                 <label for="homeAddressCountry">Country:</label>
-                <input type="text" name="homeAddressCountry"class="textBox" id="homeAddressCountry">
+                <input type="text" name="homeAddressCountry" class="depth" id="homeAddressCountry">
                 <label for="homeAddressProvince">State/Province:</label>
-                <input type="text" name="homeAddressProvince"class="textBox" id="homeAddressProvince"><br/>
+                <input type="text" name="homeAddressProvince" class="depth" id="homeAddressProvince"><br/>
                 <label for="workAddress">Work:</label>
                 <label id="workAddress" for="workAddressNum">Street Number:</label>
-                <input type="text" name="workAddressNum"class="textBox" id="workAddressNum">
+                <input type="text" name="workAddressNum" class="depth" id="workAddressNum">
                 <label for="workAddressStreet">Street:</label>
-                <input type="text" name="workAddressStreet"class="textBox" id="workAddressStreet">
+                <input type="text" name="workAddressStreet" class="depth" id="workAddressStreet">
                 <label for="workAddressCity">City:</label>
-                <input type="text" name="workAddressCity"class="textBox" id="workAddressCity">
+                <input type="text" name="workAddressCity" class="depth" id="workAddressCity">
                 <label for="workAddressCountry">Country:</label>
-                <input type="text" name="workAddressCountry"class="textBox" id="workAddressCountry">
+                <input type="text" name="workAddressCountry" class="depth" id="workAddressCountry">
                 <label for="workAddressProvince">State/Province:</label>
-                <input type="text" name="workAddressProvince"class="textBox" id="workAddressProvince"><br/>
+                <input type="text" name="workAddressProvince" class="depth" id="workAddressProvince"><br/>
                 <label for="otherAddress">Other:</label>
                 <label id="otherAddress" for="otherAddressNum">Street Number:</label>
-                <input type="text" name="otherAddressNum"class="textBox" id="otherAddressNum">
+                <input type="text" name="otherAddressNum" class="depth" id="otherAddressNum">
                 <label for="otherAddressStreet">Street:</label>
-                <input type="text" name="otherAddressStreet"class="textBox" id="otherAddressStreet">
+                <input type="text" name="otherAddressStreet" class="depth" id="otherAddressStreet">
                 <label for="otherAddressCity">City:</label>
-                <input type="text" name="otherAddressCity"class="textBox" id="otherAddressCity">
+                <input type="text" name="otherAddressCity" class="depth" id="otherAddressCity">
                 <label for="otherAddressCountry">Country:</label>
-                <input type="text" name="otherAddressCountry"class="textBox" id="otherAddressCountry">
+                <input type="text" name="otherAddressCountry" class="depth" id="otherAddressCountry">
                 <label for="otherAddressProvince">State/Province:</label>
-                <input type="text" name="otherAddressProvince"class="textBox" id="otherAddressProvince"><br/>
+                <input type="text" name="otherAddressProvince" class="depth" id="otherAddressProvince"><br/>
                 <label for="Emails">Email:</label><br/>
                 <label id="Emails" for="personalEmail">Personal:</label>
-                <input type="text" name="personalEmail" class="textBox" id="personalEmail"><br/>
+                <input type="text" name="personalEmail" class="depth" id="personalEmail"><br/>
                 <label for="workEmail">Work:</label>
-                <input type="text" name="workEmail" class="textBox" id="workEmail"><br/>
+                <input type="text" name="workEmail" class="depth" id="workEmail"><br/>
                 <label for="otherEmail">Other:</label>
-                <input type="text" name="otherEmail" class="textBox" id="otherEmail"><br/>
+                <input type="text" name="otherEmail" class="depth" id="otherEmail"><br/>
                 <label for="phones">Phone:</label><br/>
                 <label id="phones" for="homePhone">Home:</label>
-                <input type="text" name="homePhone"class="textBox" id="homePhone"><br/>
+                <input type="text" name="homePhone" class="depth" id="homePhone"><br/>
                 <label for="workPhone">Work:</label>
-                <input type="text" name="workPhone"class="textBox" id="workPhone"><br/>
+                <input type="text" name="workPhone" class="depth" id="workPhone"><br/>
                 <label for="mobilePhone">Mobile:</label>
-                <input type="text" name="mobilePhone"class="textBox" id="mobilePhone"><br/>
+                <input type="text" name="mobilePhone" class="depth" id="mobilePhone"><br/>
                 <label for="otherPhone">Other:</label>
-                <input type="text" name="otherPhone"class="textBox" id="otherPhone"><br/>
+                <input type="text" name="otherPhone" class="depth" id="otherPhone"><br/>
             </form>
             <button onclick="return addContact();" class="buttons"> Add Contact </button><br/>
                                                                 
@@ -128,13 +124,13 @@
         </div>
         
         
-        <div id="searchDiv" style="width:100%" class="divLeft">
-            <h2> Search for Contact Info </h2>
+        <div id="searchDiv" style="display:none; visibility:hidden;" >
+            <h3> Search for Contact Info </h3>
             <form action="" data-ajax="false">
-                Search Name: <input type="text" name="searchName" class="textBox" id="searchName">
-                <!--Search Number: <input type="text" id="searchNumber"class="textBox"><br />-->
+                Search Name: <input type="text" name="searchName" class="depth" style="height:22px; width:300px;" id="searchName">
+                <!--Search Number: <input type="text" id="searchNumber"class="buttons"><br />-->
             </form>
-            <button onClick="return searchContacts();"> Search </button>
+            <button onClick="return searchContacts();" class="buttons"> Search </button>
             <span id="searchContactsResult"></span>
             
             <table id="contactTable" style="width: 1500px";"align: center" >
