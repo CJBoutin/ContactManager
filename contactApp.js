@@ -247,11 +247,13 @@ function addContact(){
                 var jsonObject = JSON.parse(addRequest.responseText);
                 jsonObject = JSON.parse(addRequest.responseText);
                 
-                console.log(jsonObject);
+                //console.log(jsonObject);
                 
-                console.log(addRequest.responseText);
+                //console.log(addRequest.responseText);
                 
                 document.getElementById("addContactResult").innerHTML = firstName + " " + lastName + " added successfully.";
+                
+                clearInputs();
             }
         }
         addRequest.send(jsonSendData);
@@ -293,6 +295,17 @@ function displayContacts(){
     
 }*/
 
+
+function clearInputs(){
+    
+    var inputs = document.getElementsByClassName("depth");
+    for(var i = 0; i < inputs.length;i++){
+        inputs[i].value = "";
+    }
+    hideOrShow("contactTable", true);
+    
+}
+
 function getContactInfo(contactID){
    //need to parse this info...
     
@@ -307,29 +320,37 @@ function getContactInfo(contactID){
         retrieveRequest.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
                 
+                document.getElementById("conDetails").innerHTML = "";
+                
+                delButton = document.createElement("span");
+                delButton.innerHTML = "<button onclick=\"return remDetails();\">X</button>";
+                document.getElementById("conDetails").appendChild(delButton);
+                
                 var jsonObject = JSON.parse(retrieveRequest.responseText);
                 jsonObject = JSON.parse(jsonObject);
                 console.log(retrieveRequest.responseText);
                 console.log(jsonObject);
-                var keys = Object.keys(jsonObject);
-                console.log(keys);
                 var tbody = document.createElement("tbody");
                 var row = document.createElement("tr");
-                for(var j = 0; j < jsonObject.BusinessInfo.length;j++){
+                var keys = Object.keys(jsonObject.BusinessInfo);
+                console.log(keys);
+                for(var j = 0; j < keys.length;j++){
                     var cell = document.createElement("td");
-                    var cellData = document.createTextNode(jsonObject.BusinessInfo[j]);
-                    console.log(jsonObject.BusinessInfo[j]);
+                    var cellData = document.createTextNode(jsonObject.BusinessInfo[keys[j]]);
+                    console.log(jsonObject.BusinessInfo[keys[j]]);
                     cell.appendChild(cellData);
                     row.appendChild(cell);
                 }
-               tbody.appendChild(row);
+                tbody.appendChild(row);
                 
-                row = document.createElement("tr");
                 for(var j = 0; j < jsonObject.PhoneInfo.length;j++){
-                    for(var k = 0; k < jsonObject.PhoneInfo[j].length;k++){
+                    row = document.createElement("tr");
+                    keys = Object.keys(jsonObject.PhoneInfo[j]);
+                    console.log(keys);
+                    for(var k = 0; k < keys.length;k++){
                         var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject.PhoneInfo[j][k]);
-                        console.log(jsonObject.PhoneInfo[j][k]);
+                        var cellData = document.createTextNode(jsonObject.PhoneInfo[j][keys[k]]);
+                        console.log(jsonObject.PhoneInfo[j][keys[k]]);
                         cell.appendChild(cellData);
                         row.appendChild(cell);
                     }
@@ -337,17 +358,27 @@ function getContactInfo(contactID){
                 }
                 
                 for(var j = 0; j < jsonObject.EmailInfo.length;j++){
-                    for(var k = 0; jsonObject.EmailInfo[i].length;k++){
+                    row = document.createElement("tr");
+                    keys = Object.keys(jsonObject.EmailInfo[j]);
+                    console.log(keys);
+                    console.log(jsonObject.EmailInfo[j]);
+                    for(var k = 0; k < keys.length;k++){
                         var cell = document.createElement("td");
-                        var cellData = document.createTextNode(jsonObject.EmailInfo[j][k]);
-                        console.log(jsonObject.EmailInfo[j][k]);
+                        var cellData = document.createTextNode(jsonObject.EmailInfo[j][keys[k]]);
+                        console.log(jsonObject.EmailInfo[j][keys[k]]);
                         cell.appendChild(cellData);
                         row.appendChild(cell);
                     }
                     tbody.appendChild(row);
                 }
                 
-                document.getElementById("conDetails");
+                document.getElementById("conDetails").appendChild(tbody);
+                
+                delButton = document.createElement("span");
+                delButton.innerHTML = "<button onclick=\"return remDetails();\">X</button>";
+                document.getElementById("conDetails").appendChild(delButton);
+
+                hideOrShow("contactTable", false);
             }
         }
         retrieveRequest.send();
@@ -361,11 +392,22 @@ function getContactInfo(contactID){
     
 }
 
+function remDetails(){
+    
+    
+    document.getElementById("conDetails").innerHTML = "";
+    hideOrShow("contactTable", true);
+    
+    
+}
+
 function searchContacts(){
     
     var srchElement = document.getElementById("searchName").value;
     
     var srchAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/GetSingleContact?search=" + srchElement + "&uId=" + userID;
+    
+    document.getElementById("searchName").value = "";
     
     //contactTable = document.getElementById("contactTable");
     
@@ -454,7 +496,7 @@ function searchContacts(){
                      */
                     //or
                     
-                    cell.innerHTML = "<button onClick = \"return deleteContact(" + jsonObject[i].Id + ");\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">X</button>";
+                    cell.innerHTML = "<button onClick = \"return deleteContact(" + jsonObject[i].Id + ");\" data-contactmanager-contactid = \"" + jsonObject[i].Id + "\">DELETE</button>";
                 
                     row.appendChild(cell);
                     cell = document.createElement("td");
@@ -464,6 +506,7 @@ function searchContacts(){
                     var rowID = "row" + jsonObject[i].Id;
                     
                     row.setAttribute("id", rowID);
+                    row.setAttribute("data-contactmanager-contactid",jsonObject[i].Id);
                     
                     tablbdy.appendChild(row);
                 }
@@ -489,22 +532,29 @@ function deleteContact(contactID){
     
     var delAPI = "http://oopcontactmanager.azurewebsites.net/ContactManagerService.svc/DeleteContact?cId=" + contactID;
     
-    console.log(this.getAttribute("data-contactmanager-contactid"));
-    console.log(contactID);
-    console.log(this.getAttribute("data-contactmanager-contactid") == contactID);
+    //var row = "row" + contactID;
+    
+    //var rowID = document.getElementById(row).getAttribute("data-contactmanager-contactid");
+    //console.log(contactID);
+    //console.log(rowID);
+    //console.log(rowID == contactID);
     
     //xml request
+    
     var delRequest = new XMLHttpRequest();
     delRequest.open("GET", delAPI, true);
     //delRequest.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     try{
         delRequest.onreadystatechange = function(){
             
-            var response = JSON.parse(delRequest.responseText);
+            var response = delRequest.responseText;
             
-            if(response < 1){
+            console.log(response);
+            
+            if(response != "\"Success!\""){
                 //error deleting
                 console.log("Could not delete contact");
+                //return;
             }
             console.log("contact deleted successfully");
             //update the displayed table, but how?
@@ -516,14 +566,14 @@ function deleteContact(contactID){
             for(var i = 0; i < row.childNodes.length; i = 0){
                 row.removeChild(row.childNodes[i]);
             }
-            document.getElementById("ContactTable").firstChild.removeChild(row);
+            document.getElementById("contactTable").firstChild.removeChild(row);
             
         }
         
         delRequest.send(); //cases for errors?
         
     }catch(err){
-        
+        console.log(err);
     }
     
 }
