@@ -102,7 +102,32 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="contactApp.js" />
     <Content Include="ContactManagerService.svc" />
+    <Content Include="default.html" />
+    <Content Include="rollups\aes.js" />
+    <Content Include="rollups\hmac-md5.js" />
+    <Content Include="rollups\hmac-ripemd160.js" />
+    <Content Include="rollups\hmac-sha1.js" />
+    <Content Include="rollups\hmac-sha224.js" />
+    <Content Include="rollups\hmac-sha256.js" />
+    <Content Include="rollups\hmac-sha3.js" />
+    <Content Include="rollups\hmac-sha384.js" />
+    <Content Include="rollups\hmac-sha512.js" />
+    <Content Include="rollups\md5.js" />
+    <Content Include="rollups\pbkdf2.js" />
+    <Content Include="rollups\rabbit-legacy.js" />
+    <Content Include="rollups\rabbit.js" />
+    <Content Include="rollups\rc4.js" />
+    <Content Include="rollups\ripemd160.js" />
+    <Content Include="rollups\sha1.js" />
+    <Content Include="rollups\sha224.js" />
+    <Content Include="rollups\sha256.js" />
+    <Content Include="rollups\sha3.js" />
+    <Content Include="rollups\sha384.js" />
+    <Content Include="rollups\sha512.js" />
+    <Content Include="rollups\tripledes.js" />
+    <Content Include="smallProjectStyle.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

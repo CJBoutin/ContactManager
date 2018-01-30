@@ -45,6 +45,7 @@ namespace ContactManagerServiceLayer
             Method = "GET", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "IsAlive")]
             string IsAlive();
+
         // Add a new contact with the ContactData contract
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Bare,

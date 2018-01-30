@@ -19,14 +19,13 @@ namespace DebuggingConsole
         {
             DataManipulation.FormatForSql("stri-ng");
             Requests request = new Requests();
-            /*
             Dictionary<string, dynamic> jsonInfo = new Dictionary<string, dynamic>();
             List<string> dict = new List<string>();
             
             dict.Add("1");
-            dict.Add("NewFirst");
-            dict.Add("NewLast");
-            dict.Add("4");
+            dict.Add("John");
+            dict.Add("Smith");
+            //dict.Add("4");
 
             List<List<string>> pList = new List<List<string>>();
             List<string> phoneData = new List<string>();
@@ -65,18 +64,17 @@ namespace DebuggingConsole
             jsonInfo.Add("AddressInfo", aList);
             jsonInfo.Add("EmailInfo", eList);
             jsonInfo.Add("PhoneInfo", pList);
-            */
-            /*
-             Dictionary<string, string> req = new Dictionary<string, string>();
-            req.Add("UserName", "bcoles2");
-            req.Add("PasswordHash", "81dc9bdb52d04dc20036dbd8313ed055");
-
-            string json = JsonConvert.SerializeObject(req);
-            var response = request.PostContent(json, "GetUser").Result;
-            */
             
+            
+             Dictionary<string, string> req = new Dictionary<string, string>();
+            req.Add("UserName", "John");
+            req.Add("PasswordHash", "Smith");
+
+            string json = JsonConvert.SerializeObject(jsonInfo);
+            var response = request.PostContent(json, "NewContact").Result;
+            /*
             string api = ConfigurationManager.AppSettings["apiConnection"].ToString();
-            string endpoint = @"GetSingleContact?search=k&uId=5";
+            string endpoint = @"GetContactInfo?&Id=14";
 
 
 
@@ -90,7 +88,7 @@ namespace DebuggingConsole
                 resp = JsonConvert.DeserializeObject(str);
             }
             
-            
+            */
 
 
         }

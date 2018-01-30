@@ -26,6 +26,7 @@ namespace ContactManagerServiceLayer
 
         public string NewContact(ContactData cData)
         {
+            
             Dictionary<string, string> resp = new Dictionary<string, string>();
             var addressInfo = cData.AddressInfo;
             var emailInfo = cData.EmailInfo;
@@ -35,7 +36,7 @@ namespace ContactManagerServiceLayer
 
             try
             {
-
+                connection.Close();
                 // Insert the new contact into the SQL Database
                 connection.Open();
                 // Insert the new contact data
@@ -299,7 +300,7 @@ namespace ContactManagerServiceLayer
         public async Task<string> GetContactInfo(string conId)
         {
 
-            Dictionary<string, string> response = new Dictionary<string, string>();
+            Dictionary<string, dynamic> response = new Dictionary<string, dynamic>();
             AdvancedContact contact = new AdvancedContact();
             List<dynamic> contactItem = new List<dynamic>();
             MySqlConnection connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["database"].ToString());
@@ -308,19 +309,33 @@ namespace ContactManagerServiceLayer
             try
             {
                 connection.Open();
+                string contactCmd = string.Format(@"SELECT * FROM contactinfo WHERE Id={0};", conId);
                 string addressCmd = string.Format(@"SELECT * FROM addresses WHERE ContactInfoId={0};", conId);
                 string phoneCmd = string.Format(@"SELECT * FROM phonenumbers WHERE ContactInfoId={0};", conId);
                 string emailCmd = string.Format(@"SELECT * FROM email WHERE ContactInfoId={0};", conId);
 
+                MySqlCommand command = new MySqlCommand(contactCmd, connection);
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        Dictionary<string, string> d = new Dictionary<string, string>();
+                        d.Add("UserId", reader["Id"].ToString());
+                        d.Add("FirstName", reader["FirstName"].ToString());
+                        d.Add("LastName", reader["LastName"].ToString());
+                        response.Add("BusinessInfo", d);
+                    }
+                }
 
-                MySqlCommand command = new MySqlCommand(addressCmd, connection);
+
+                command = new MySqlCommand(addressCmd, connection);
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     List<Dictionary<string, string>> dict = new List<Dictionary<string, string>>();
                     while (reader.Read())
                     {
                         Dictionary<string, string> d = new Dictionary<string, string>();
-                        d.Add("EmailType", reader["AddressType"].ToString());
+                        d.Add("AddressType", reader["AddressType"].ToString());
                         d.Add("City", reader["City"].ToString());
                         d.Add("Country", reader["Country"].ToString());
                         d.Add("Province", reader["Province"].ToString());
@@ -328,7 +343,7 @@ namespace ContactManagerServiceLayer
                         d.Add("StreetName", reader["StreetName"].ToString());
                         dict.Add(d);
                     }
-                    contactItem.Add(dict);
+                    response.Add("AddressInfo", dict);
                 }
 
                 command = new MySqlCommand(phoneCmd, connection);
@@ -345,7 +360,7 @@ namespace ContactManagerServiceLayer
                         dict.Add(d);
 
                     }
-                    contactItem.Add(dict);
+                    response.Add("PhoneInfo", dict);
                 }
 
                 command = new MySqlCommand(emailCmd, connection);
@@ -360,7 +375,7 @@ namespace ContactManagerServiceLayer
                         d.Add("EmailAddress", reader["Address"].ToString());
                         dict.Add(d);
                     }
-                    contactItem.Add(dict);
+                    response.Add("EmailInfo", dict);
                 }
             }
             catch(Exception e)
@@ -371,7 +386,7 @@ namespace ContactManagerServiceLayer
             {
                 connection.Close();
             }
-            string jsonObj = JsonConvert.SerializeObject(contactItem);
+            string jsonObj = JsonConvert.SerializeObject(response);
             return jsonObj;
         }
 
